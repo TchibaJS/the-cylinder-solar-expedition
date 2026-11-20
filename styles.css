@@ -1,0 +1,199 @@
+:root{font-family:Arial,Helvetica,sans-serif;color:#f2f6ff;background:#020713;font-synthesis:none}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{display:flex;align-items:center;justify-content:center}
+button,select{font:inherit}button{cursor:pointer}
+#panorama{position:relative;width:min(100vw,200vh);height:min(50vw,100vh);overflow:hidden;background:#020713}
+.stars{position:absolute;inset:0;background:url('assets/Stars.jpg') center/100% 100% no-repeat;opacity:.77}
+.stars:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#020713b0 96%)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#scene{position:absolute;inset:0}
+.toolbar{position:absolute;left:1.2%;top:42%;display:flex;align-items:center;gap:.35vw;background:#061223d9;border:1px solid #6a91b55c;border-radius:.4vw;padding:.35vw .5vw;box-shadow:0 .3vw 1vw #0009}
+.toolbar label{display:flex;align-items:center;gap:.25vw;font-size:.5vw;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.toolbar select,.toolbar button,.action{background:#143149;color:#fff;border:1px solid #8ecfff81;border-radius:.25vw;min-height:1.25vw;padding:.2vw .45vw;font-size:.59vw}
+.toolbar button:hover,.action:hover,.moon-page button:hover{background:#226081}
+#status{position:absolute;right:1.2%;bottom:40%;margin:0;font-size:.5vw;color:#b9d6eb;max-width:16%;text-align:right}
+.overview-heading{position:absolute;left:42%;top:40%;width:16%;text-align:center;font-size:.9vw;letter-spacing:.16em;text-shadow:0 0 .5vw #000}
+.overview-sub{position:absolute;left:38%;top:44%;width:24%;text-align:center;font-size:.46vw;color:#b9cfe1}
+.world{position:absolute;top:51%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:.28vw;background:none;border:0;color:white;padding:.3vw;min-width:5vw;text-shadow:0 0 .3vw #000,0 0 .4vw #000}
+.world:hover .globe,.world:focus-visible .globe{filter:brightness(1.25) drop-shadow(0 0 .45vw #78d8ff);transform:scale(1.08)}
+.world:hover .ring-system,.world:focus-visible .ring-system{filter:brightness(1.18);transform:scale(1.06)}
+.globe{display:block;position:relative;flex:none;width:var(--diameter);height:var(--diameter);border-radius:50%;overflow:hidden;background:#14202d;box-shadow:inset -.3vw -.2vw .9vw #000a,0 0 1.2vw var(--glow,#75a8dc55);transition:transform .3s,filter .3s}
+.globe:before{content:"";position:absolute;inset:0 auto 0 0;width:400%;height:100%;background-image:var(--texture);background-size:50% 100%;background-repeat:repeat-x;transform:translate3d(0,0,0);will-change:transform;animation:spinTexture 55s linear infinite}
+.globe:after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 31% 27%,#ffffff37,transparent 38%),linear-gradient(120deg,transparent 42%,#0008 75%,#000c);pointer-events:none}
+.ring-system{position:relative;display:block;flex:none;width:var(--diameter);height:var(--diameter);isolation:isolate;transition:transform .3s,filter .3s}
+.ring-system .globe{position:absolute;inset:0;z-index:1;width:100%;height:100%}
+.ring-art{position:absolute;left:-65%;top:0;width:230%;height:100%;background:var(--ring-image) center/100% 100% no-repeat;transform:rotate(var(--ring-tilt));pointer-events:none}
+.ring-back{z-index:0}
+.ring-front{z-index:2;clip-path:inset(50% 0 0 0)}
+.ring-system.saturn{--ring-image:url('assets/SaturnRings.svg');--ring-tilt:-20deg}
+.ring-system.uranus{--ring-image:url('assets/UranusRings.svg');--ring-tilt:-69deg}
+.ring-system.uranus .ring-art{left:-45%;width:190%;opacity:.88}
+.focus-globe .globe:before{animation-duration:55s}
+.astronaut{position:absolute;left:0;top:0;width:4%;height:auto;pointer-events:none;filter:drop-shadow(0 0 .4vw #8acfff66);transform:translate3d(0,0,0);will-change:transform}
+body.preview .astronaut{width:clamp(68px,10vw,130px)}
+@keyframes spinTexture{to{transform:translate3d(-50%,0,0)}}
+@keyframes orbitDrift{to{translate:1.2vw -.35vw}}
+@keyframes moonDrift{to{translate:.6vw -.35vw}}
+.world-label{font-size:.55vw;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.focus-globe{position:absolute;left:43%;top:51%;transform:translate(-50%,-50%);width:7.2vw;height:7.2vw;pointer-events:none}
+.focus-globe .globe{width:100%;height:100%}
+.focus-globe .ring-system{width:100%;height:100%}
+.moon-closeup{width:100%;height:100%;display:grid;place-items:center;filter:drop-shadow(0 0 1.1vw #7fb9e74d)}
+.moon-portrait{display:block;width:100%;height:100%;object-fit:contain}
+.moon-mapped-globe:before{animation:moonSpin 90s linear infinite}
+@keyframes moonSpin{from{transform:translate3d(-25%,0,0)}to{transform:translate3d(-75%,0,0)}}
+.moon-neutral{width:82%;height:82%;border-radius:50%;background:radial-gradient(circle at 32% 28%,#b7b7ae,#767d82 45%,#252c38 78%,#0c111a);box-shadow:inset -1vw -1vw 1.8vw #0009,0 0 1vw #9fc7df4d}
+.visual-caption{color:#a6c5d8!important;font-size:.36vw!important}
+.moon-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.planet-panel{position:absolute;left:51%;top:42%;width:16%;height:17%;padding:.45vw .6vw;background:#06121de8;border:1px solid #93d4f688;box-shadow:0 .5vw 2vw #000c;overflow:hidden}
+.planet-panel h1{font-size:.74vw;letter-spacing:.1em;margin:0 0 .25vw;text-transform:uppercase;color:#f4fbff}
+.planet-panel p{font-size:.48vw;line-height:1.24;margin:.15vw 0;color:#e2edf5}
+.planet-panel .facts{font-size:.43vw;color:#8ed9f8}
+.planet-panel .disclaimer{font-size:.38vw;color:#9aaebc}
+.planet-panel .eyebrow{font-size:.35vw;letter-spacing:.2em;color:#76c9eb;font-weight:700;margin-bottom:.35em}
+.planet-panel .planet-summary{line-height:1.4}
+.stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.3vw;margin:.5vw 0}
+.stat-card{display:flex;flex-direction:column;gap:.25em;padding:.4vw;background:#10273a;border-top:2px solid #63c9f2;min-width:0}
+.stat-label{font-size:.33vw;color:#a9c6d8;text-transform:uppercase;letter-spacing:.07em}
+.stat-value{font-size:.43vw;color:#fff;overflow-wrap:anywhere}
+.source-notes{border-top:1px solid #8ecfff55;padding-top:.5em;color:#a9d8ed;font-size:.38vw}
+.source-notes summary{cursor:pointer}
+.source-link{display:block;color:#90dcff;overflow-wrap:anywhere;margin:.4em 0;font-size:.9em}
+.source-link small{display:block;color:#aac5d3;font-size:.75em;font-weight:400}
+.back{position:absolute;left:59%;top:57.5%;min-width:8vw}
+.moon-field{position:absolute;left:35%;top:20%;width:16%;height:60%;overflow:visible}
+.orbit-track{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid #8bbddd35;border-radius:50%;pointer-events:none}
+.moon-field .moon{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.1vw;background:none;border:0;color:#f3f5fc;font-size:.41vw;max-width:4vw;text-shadow:0 0 .2vw #000;transform:translate(-50%,-50%)}
+.moon .rock{display:block;width:var(--size);height:var(--size);border-radius:50%;background:radial-gradient(circle at 35% 25%,#dfdfd1,#847a77 62%,#33363c);box-shadow:inset -.15vw -.2vw .3vw #000b}
+.moon .rock.moon-photographed{background-size:cover;background-position:center;background-color:#11151d}
+.moon:hover .rock,.moon:focus-visible .rock{box-shadow:0 0 .4vw #b7e6ff}
+.moon-library{margin-top:1.2em;padding-top:.8em;border-top:1px solid #8ecfff55}
+.moon-library h2{font-size:1.1em;margin:.2em 0 .5em}
+.moon-info{padding:.5em .65em;margin:.5em 0;background:#123047;border-left:3px solid #8ed9f8}
+.moon-info h3{margin:0 0 .25em;font-size:1em}
+.moon-info .eyebrow{font-size:.7em}
+.planet-panel .moon-info p{margin:.25em 0;font-size:.85em}
+.moon-search{display:block;width:100%;padding:.45em .6em;margin:.5em 0;background:#091c2e;border:1px solid #8ecfff88;border-radius:5px;color:#fff;font:inherit}
+.moon-list{max-height:20vh;overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35em}
+.moon-entry{padding:.4em .5em;text-align:left;background:#10283d;color:#edf7ff;border:1px solid #8ecfff55;border-radius:4px;font:inherit}
+.moon-entry:hover,.moon-entry.selected{background:#24577b;border-color:#bde9ff}
+.moon-entry[hidden]{display:none}
+.moon-page{position:absolute;left:34%;top:58%;width:15%;display:flex;justify-content:space-between;align-items:center;font-size:.44vw}
+.moon-page button{background:#143149;color:#fff;border:1px solid #8ecfff81;border-radius:.2vw;padding:.2vw .35vw;font-size:.43vw}
+.moon-note{position:absolute;left:34%;top:60%;width:25%;font-size:.4vw;color:#cfe5f4}
+button:focus-visible,select:focus-visible{outline:.12vw solid #fff;outline-offset:.12vw}
+/* The in-app desktop view is deliberately larger. ?projection=1 restores the 2:1 cylinder source. */
+body.preview #panorama{width:100vw;height:100vh}
+body.preview .stars{background-size:cover}
+body.preview .toolbar{left:2%;top:2%;gap:6px;padding:6px 8px;border-radius:7px}
+body.preview .toolbar label{font-size:11px;gap:5px}
+body.preview .toolbar select,body.preview .toolbar button,body.preview .action{font-size:13px;min-height:30px;padding:4px 8px;border-radius:5px}
+body.preview .overview-heading{left:20%;top:11%;width:60%;font-size:clamp(20px,2.2vw,34px);white-space:nowrap}
+body.preview .overview-sub{left:20%;top:20%;width:60%;font-size:clamp(12px,1.2vw,17px)}
+body.preview .world{gap:5px;min-width:0;width:12.5%;padding:4px}
+body.preview .world-label{font-size:clamp(10px,1vw,14px)}
+body.preview .focus-globe{left:28%;top:44%;width:clamp(110px,22vw,300px);height:clamp(110px,22vw,300px)}
+body.preview .planet-panel{left:50%;top:19%;width:46%;height:65%;padding:clamp(10px,1.3vw,20px);border-radius:8px;overflow:auto}
+body.preview .planet-panel h1{font-size:clamp(19px,2.1vw,32px);margin:0 0 8px}
+body.preview .planet-panel p{font-size:clamp(12px,1.25vw,18px);line-height:1.4;margin:7px 0}
+body.preview .planet-panel .facts{font-size:clamp(11px,1.1vw,15px)}
+body.preview .planet-panel .disclaimer{font-size:clamp(10px,.95vw,13px)}
+body.preview .visual-caption{font-size:clamp(10px,.95vw,13px)!important}
+body.preview .planet-panel .eyebrow,body.preview .stat-label{font-size:11px}
+body.preview .stat-grid{gap:8px;margin:12px 0}
+body.preview .stat-card{padding:9px}
+body.preview .stat-value{font-size:clamp(12px,1.3vw,18px)}
+body.preview .source-notes{font-size:12px}
+body.preview .back{left:50%;top:87%;min-width:20%;font-size:clamp(12px,1.2vw,16px)}
+body.preview .moon-field{left:8%;top:18%;width:38%;height:55%;overflow:visible}
+body.preview .moon-field .moon{font-size:clamp(10px,1vw,14px);max-width:30%}
+body.preview .moon .rock{width:clamp(13px,2.4vw,26px);height:clamp(13px,2.4vw,26px)}
+body.preview .moon-page{left:8%;top:85%;width:38%;font-size:clamp(10px,1vw,14px)}
+body.preview .moon-page button{font-size:clamp(10px,1vw,14px);padding:3px 6px}
+body.preview .moon-note{left:8%;top:92%;width:38%;font-size:clamp(10px,1vw,14px)}
+body.preview #status{right:2%;bottom:2%;font-size:12px}
+/* Igloo's 10876 x 999 WebView is a panoramic canvas, not a 2:1 desktop screen. */
+body.cylinder #panorama{width:100vw;height:100vh}
+body.cylinder .stars{background-size:auto 100%;background-repeat:repeat-x}
+body.cylinder .toolbar{left:1%;top:3%;gap:8px;padding:8px 10px;border-radius:8px}
+body.cylinder .toolbar label{font-size:16px;gap:6px}
+body.cylinder .toolbar select,body.cylinder .toolbar button,body.cylinder .action{font-size:20px;min-height:48px;padding:7px 12px;border-radius:6px}
+body.cylinder .overview-heading{left:40%;top:6%;width:20%;font-size:38px}
+body.cylinder .overview-sub{left:38%;top:14%;width:24%;font-size:20px}
+body.cylinder .world{top:53%;min-width:5vw;gap:12px;padding:8px}
+body.cylinder .world-label{font-size:23px}
+body.cylinder .astronaut{width:150px}
+body.cylinder .focus-globe{left:43%;top:49%;width:52vh;height:52vh}
+body.cylinder .planet-panel{left:51%;top:17%;width:min(9vw,900px);height:62vh;padding:22px 28px;border-radius:10px;overflow:auto}
+body.cylinder .planet-panel h1{font-size:32px;margin:0 0 16px}
+body.cylinder .planet-panel p{font-size:22px;line-height:1.4;margin:12px 0}
+body.cylinder .planet-panel .facts{font-size:19px}
+body.cylinder .planet-panel .disclaimer{font-size:17px}
+body.cylinder .visual-caption{font-size:17px!important}
+body.cylinder .planet-panel .eyebrow,body.cylinder .stat-label{font-size:15px}
+body.cylinder .stat-grid{gap:10px;margin:14px 0}
+body.cylinder .stat-card{padding:12px}
+body.cylinder .stat-value{font-size:21px}
+body.cylinder .source-notes{font-size:17px}
+body.cylinder .back{left:51%;top:82%;min-width:min(9vw,900px)}
+body.cylinder .moon-field{left:38%;top:16%;width:10%;height:66%}
+body.cylinder .moon-field .moon{font-size:18px;max-width:160px}
+body.cylinder .moon .rock{width:28px;height:28px}
+body.cylinder .moon-page{left:38%;top:87%;width:10%;font-size:18px}
+body.cylinder .moon-page button{font-size:18px;padding:7px 10px}
+body.cylinder .moon-note{left:38%;top:92%;width:14%;font-size:18px}
+body.cylinder .moon-list{max-height:25vh}
+body.cylinder .moon-entry{font-size:18px}
+body.cylinder #status{right:1%;bottom:2%;font-size:17px}
+/* Field-guide presentation shared by the desktop and cylinder layouts. */
+.planet-panel{background:radial-gradient(circle at 95% 0%,#1c456640,transparent 44%),linear-gradient(160deg,#071624f5,#06101deb 70%);border:1px solid #86bed28c;border-radius:12px;box-shadow:0 18px 55px #000b,0 0 32px #175d8540;scrollbar-width:thin;scrollbar-color:#6d9bb7 #0b1a29}
+.planet-panel:before{content:"";display:block;height:3px;margin:-.45vw -.6vw .55vw;background:linear-gradient(90deg,#e8c48a,#70caee 48%,transparent)}
+.planet-panel .eyebrow{color:#e9c78f;letter-spacing:.16em}
+.planet-panel h1{font-family:Georgia,'Times New Roman',serif;letter-spacing:.015em;color:#fff;text-transform:none}
+.planet-detail>.eyebrow,.planet-detail>h1,.moon-detail>.eyebrow,.moon-detail>h1{text-align:center}
+.planet-panel .planet-summary{color:#dce8f1;line-height:1.5}
+.stat-card{background:linear-gradient(155deg,#15344a,#0c2335);border:1px solid #6fa9bf4d;border-top:2px solid #d7b77e;border-radius:6px}
+.stat-label{color:#a9c6d8}
+.stat-value{font-weight:650}
+.source-notes{margin:.8em 0;padding:.65em .75em;border:1px solid #6b9fb253;border-radius:6px;background:#0c22346b}
+.source-notes summary{color:#bfe5f3;font-weight:600}
+.moon-library{margin-top:1em;padding-top:.8em;border-top:1px solid #709cb062}
+.moon-library-heading{display:flex;align-items:baseline;justify-content:space-between;gap:1em}
+.moon-library h2{font-family:Georgia,'Times New Roman',serif;font-weight:400;margin:0 0 .5em;color:#f4f6f7}
+.moon-count{font-size:.8em;color:#9dc5d7;border:1px solid #679bb15c;border-radius:99px;padding:.15em .6em}
+.moon-entry{background:#102b3c;border-color:#6dabc06b;transition:background .2s,border-color .2s}
+.moon-entry:hover,.moon-entry.selected{background:#24627d;border-color:#d3c49c}
+.moon-search{border-color:#6f9fb46b}
+.visual-caption{padding-left:.75em;border-left:2px solid #d7b77e}
+.action.back{background:#193d52;border-color:#9ccddc;color:#f7fbff;box-shadow:0 6px 25px #0008}
+body.preview .planet-panel:before{margin:-10px -20px 14px}
+body.cylinder .planet-panel:before{margin:-22px -28px 22px}
+body.preview .planet-panel h1{font-size:clamp(26px,2.9vw,42px)}
+body.cylinder .planet-panel h1{font-size:44px}
+/* Compact controls with a consistent field-guide finish. */
+.toolbar{background:linear-gradient(140deg,#071827ed,#0b2132e8);border:1px solid #7eaab872;box-shadow:0 10px 30px #0009,0 0 18px #16445d48;backdrop-filter:blur(10px)}
+.toolbar label{position:relative}
+.toolbar label:after{content:"";position:absolute;right:1em;top:42%;width:.44em;height:.44em;border-right:2px solid #e7c58a;border-bottom:2px solid #e7c58a;transform:rotate(45deg);pointer-events:none}
+.toolbar select{appearance:none;color-scheme:dark;background:linear-gradient(155deg,#143349,#0b2233);border:1px solid #8bbed077;border-radius:8px;color:#f5f8fa;font-weight:600;letter-spacing:.02em;padding-right:2.6em;box-shadow:inset 0 1px #ffffff18;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .2s}
+.toolbar select:hover,.toolbar select:focus-visible{border-color:#e6c48b;box-shadow:0 0 0 2px #e6c48b30}
+.toolbar select option{background:#10283a;color:#fff}
+.toolbar button{background:linear-gradient(155deg,#16384d,#0d2638);border:1px solid #8bbed077;border-radius:8px;font-weight:600;transition:background .2s,border-color .2s}
+.toolbar button:hover,.toolbar button:focus-visible{background:#1d516b;border-color:#e6c48b}
+.action.back{display:flex;align-items:center;justify-content:center;gap:.7em;background:linear-gradient(115deg,#214a60,#14354a);border:1px solid #a5d1d8;border-radius:9px;font-weight:700;letter-spacing:.04em;transition:background .2s,transform .2s,border-color .2s}
+.action.back:before{content:"←";color:#e9c78f;font-size:1.2em;line-height:1}
+.action.back:hover,.action.back:focus-visible{background:#27617b;border-color:#e9c78f;transform:translateY(-2px)}
+body.preview .toolbar select{min-width:118px;padding-right:30px}
+body.cylinder .toolbar select{min-width:190px;padding-right:48px}
+.planet-panel{overflow-x:hidden}
+body.preview .planet-panel:before{margin:-10px 0 14px}
+body.cylinder .planet-panel:before{margin:-22px 0 22px}
+.action.back{min-width:0;width:clamp(130px,8vw,220px);transform:translateX(-50%)}
+.action.back:hover,.action.back:focus-visible{transform:translate(-50%,-2px)}
+body.preview .back{left:73%;width:152px;min-width:0;min-height:40px;padding:7px 12px}
+body.cylinder .back{left:calc(51% + min(4.5vw,450px));width:220px;min-width:0;min-height:48px}
+/* Match the overview typography and labels to the field guide. */
+.overview-heading{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:.06em;color:#f8f2e7;text-shadow:0 3px 18px #000,0 0 28px #c9a66d40}
+.overview-sub{font-family:Arial,Helvetica,sans-serif;line-height:1.5;letter-spacing:.025em;color:#bad5e2;text-shadow:0 2px 10px #000}
+.world-label{font-family:Arial,Helvetica,sans-serif;font-weight:700;letter-spacing:.11em;color:#f0e3c9;background:linear-gradient(115deg,#0c2537db,#09202edb);border:1px solid #bda87877;border-radius:99px;padding:.28em .75em;box-shadow:0 4px 16px #0009;text-shadow:0 1px 5px #000}
+.world:hover .world-label,.world:focus-visible .world-label{color:#fff8e7;border-color:#e7c58a;background:#1b4258}
+.toolbar select,.toolbar button{color:#f4ead7}
+#status{color:#bad5e2}
