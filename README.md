@@ -1,5 +1,13 @@
 # The Solar Expedition — HTML version
 
+## Hosted cylinder version
+
+This folder is the separate GitHub Pages project for the Igloo cylinder. Its public address is `https://tchibajs.github.io/the-cylinder-solar-expedition/`. The Capsule Edition is a different repository and is not changed by edits here.
+
+After changing this project, commit and push it from GitHub Desktop. Wait for GitHub Pages to finish publishing, then refresh the WebView on the central computer. When `app.js` or `styles.css` changes, increase the `?v=` number on the corresponding references in `index.html` before committing; that makes the refreshed page request the newest files.
+
+The current trial keeps the other seven planets visible as subdued, selectable landmarks during a planet or moon close-up. A moon close-up also shows its parent planet nearby.
+
 This is a separate, offline web version of the Unity experience. In the venue's wide WebView it renders a flat panoramic strip for the cylinder. It does not need Unity, the Igloo Unity Toolkit, Spout, or a Windows build. See [Cylinder starter guide](../CYLINDER_STARTER_GUIDE.md) for the current installation findings and setup steps.
 
 ## Included

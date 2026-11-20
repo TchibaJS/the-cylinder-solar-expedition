@@ -197,3 +197,15 @@ body.cylinder .back{left:calc(51% + min(4.5vw,450px));width:220px;min-width:0;mi
 .world:hover .world-label,.world:focus-visible .world-label{color:#fff8e7;border-color:#e7c58a;background:#1b4258}
 .toolbar select,.toolbar button{color:#f4ead7}
 #status{color:#bad5e2}
+/* Keep the other worlds present without competing with the selected body. */
+.ambient-world,.parent-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;cursor:pointer;transition:opacity .25s,filter .25s}
+.ambient-world{left:var(--preview-x);top:93%;transform:translate(-50%,-50%);width:10%;opacity:.52;filter:saturate(.72)}
+.ambient-world:hover,.ambient-world:focus-visible,.parent-world:hover,.parent-world:focus-visible{opacity:1;filter:saturate(1) brightness(1.18)}
+.ambient-label{font-size:clamp(10px,.95vw,15px);font-weight:600;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap}
+.parent-world{left:9%;top:48%;transform:translate(-50%,-50%);width:clamp(50px,8vw,115px);height:auto;opacity:.7}
+.parent-world>.globe,.parent-world>.ring-system{width:100%;height:auto;aspect-ratio:1}
+.focus-globe,.planet-panel,.action.back,.moon-field{z-index:2}
+body.cylinder .ambient-world{left:var(--cylinder-x);top:53%;width:7vw;gap:10px}
+body.cylinder .ambient-label{font-size:18px}
+body.cylinder .parent-world{left:34%;top:50%;width:min(3vw,320px)}
+body.cylinder .parent-world .ambient-label{font-size:18px}

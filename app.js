@@ -28,8 +28,36 @@ function playAudio(){stopAudio();if(!narrationOn||selected<0||chosenMoon)return;
 function updateControls(){const fr=language.value==='fr',previous=voice.value;voice.replaceChildren();for(const item of fr?['estelle']:['anna','charles']){const option=el('option','',item[0].toUpperCase()+item.slice(1));option.value=item;voice.append(option)}if([...voice.options].some(option=>option.value===previous))voice.value=previous;document.querySelector('#languageLabel').textContent=t('language');document.querySelector('#voiceLabel').textContent=t('voice');document.querySelector('#soundLabel').textContent=t(narrationOn?'on':'off');sound.setAttribute('aria-pressed',String(narrationOn));document.documentElement.lang=language.value}
 function overview(){const title=el('h1','overview-heading',t('heading'));scene.append(title,el('p','overview-sub',t('sub')));catalog.forEach((p,i)=>{const btn=el('button','world');btn.type='button';btn.style.left=(6.25+i*12.5)+'%';btn.setAttribute('aria-label',nameOf(p));const size=`min(${(sizes[i]*.75).toFixed(2)}vw,${(sizes[i]*5.5).toFixed(2)}vh)`;btn.append(globe(p,size),el('span','world-label',nameOf(p)));btn.onclick=()=>select(i);scene.append(btn)});const astronaut=el('img','astronaut');astronaut.src='assets/astronaut-float.webp';astronaut.alt='Floating astronaut';scene.append(astronaut)}
 function select(i){selected=i;chosenMoon=null;status.textContent='';render();playAudio()}
+function surroundingWorlds(){
+  // The selected world occupies the central viewing sector; its neighbours
+  // remain around the rest of the cylinder as quiet, selectable landmarks.
+  const cylinderSlots=[70,79,88,97,6,17,28];
+  const previewSlots=[10,23,36,49,62,75,88];
+  for(let step=1;step<catalog.length;step++){
+    const index=(selected+step)%catalog.length;
+    const p=catalog[index];
+    const button=el('button','ambient-world');
+    button.type='button';
+    button.style.setProperty('--cylinder-x',cylinderSlots[step-1]+'%');
+    button.style.setProperty('--preview-x',previewSlots[step-1]+'%');
+    button.setAttribute('aria-label',(language.value==='fr'?'Explorer ':'Explore ')+nameOf(p));
+    const size=`min(${(sizes[index]*.36).toFixed(2)}vw,${(sizes[index]*4).toFixed(2)}vh)`;
+    button.append(globe(p,size),el('span','ambient-label',nameOf(p)));
+    button.onclick=()=>select(index);
+    scene.append(button);
+  }
+}
 function detail(){
   const p=catalog[selected];
+  surroundingWorlds();
+  if(chosenMoon){
+    const parent=el('button','parent-world');
+    parent.type='button';
+    parent.setAttribute('aria-label',(language.value==='fr'?'Retour à ':'Back to ')+nameOf(p));
+    parent.append(globe(p,'100%'),el('span','ambient-label',nameOf(p)));
+    parent.onclick=()=>{chosenMoon=null;render();playAudio()};
+    scene.append(parent);
+  }
   const focus=el('div','focus-globe');focus.append(chosenMoon?moonVisual(chosenMoon):globe(p,'100%'));scene.append(focus);
   const panel=el('article','planet-panel '+(chosenMoon?'moon-detail':'planet-detail'));
   if(chosenMoon){
