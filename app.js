@@ -1,9 +1,11 @@
 const scene=document.querySelector('#scene');
+const ambient=document.querySelector('#ambient');
 const audio=document.querySelector('#narration');
 const status=document.querySelector('#status');
 const language=document.querySelector('#language');
 const voice=document.querySelector('#voice');
 const sound=document.querySelector('#sound');
+const replay=document.querySelector('#replay');
 const wideCylinder=innerWidth/innerHeight>3;
 const projection=new URLSearchParams(location.search).get('projection')==='1'||wideCylinder;
 document.body.classList.toggle('preview',!projection);
@@ -12,7 +14,17 @@ window.atlasLanguage=()=>language.value;
 window.narratorAudio=audio;
 const colors=['#bbb6ad','#eed2a3','#5fb7ff','#cf7756','#d8b899','#e0d0aa','#a2eef0','#6485ee'];
 const sizes=[3.5,5.1,5.4,4.2,7.1,6.4,5.7,5.5];
-let catalog=[];let selected=-1;let chosenMoon=null;let narrationOn=true;
+let catalog=[];let selected=-1;let chosenMoon=null;let narrationOn=true;let learningAudio=null;
+const discoveries={
+  Mercury:{en:['A cratered world','Mercury’s rocky surface preserves many impact craters.'],fr:['Un monde cratérisé','La surface rocheuse de Mercure conserve de nombreux cratères d’impact.']},
+  Venus:{en:['A hidden surface','Thick clouds conceal Venus’s surface, while its dense atmosphere traps heat.'],fr:['Une surface cachée','Des nuages épais cachent la surface de Vénus, et son atmosphère dense piège la chaleur.']},
+  Earth:{en:['Water and life','Liquid water covers most of Earth’s surface. Its atmosphere helps regulate temperature and supports life.'],fr:['Eau et vie','L’eau liquide couvre la majeure partie de la surface terrestre. Son atmosphère aide à réguler la température et rend la vie possible.']},
+  Mars:{en:['The red planet','Iron-rich dust gives Mars its reddish appearance.'],fr:['La planète rouge','La poussière riche en fer donne à Mars sa couleur rougeâtre.']},
+  Jupiter:{en:['A giant storm','Jupiter’s Great Red Spot is a vast storm in its atmosphere.'],fr:['Une tempête géante','La Grande Tache rouge de Jupiter est une vaste tempête dans son atmosphère.']},
+  Saturn:{en:['The rings','Saturn’s rings are made mostly of countless pieces of ice, with some rock and dust.'],fr:['Les anneaux','Les anneaux de Saturne sont surtout formés d’innombrables morceaux de glace, ainsi que de roche et de poussière.']},
+  Uranus:{en:['A planet on its side','Uranus rotates with an extreme tilt, so its axis is nearly in the plane of its orbit.'],fr:['Une planète couchée','Uranus tourne avec une inclinaison extrême : son axe est presque dans le plan de son orbite.']},
+  Neptune:{en:['Distant winds','Neptune’s atmosphere has powerful winds and changing storms.'],fr:['Des vents lointains','L’atmosphère de Neptune connaît des vents puissants et des tempêtes changeantes.']}
+};
 const labels={en:{language:'Language',voice:'Voice',on:'Narration on',off:'Narration off',heading:'THE SOLAR EXPEDITION',sub:'You are at the Sun. Select a planet to explore it and its moons.',back:'Overview',diameter:'Diameter',year:'Orbital year',moons:'Catalogue moons',illustrative:'Model sizes, distances and moon orbits are illustrative.',sources:'NASA sources',discovery:'Discovery',moonIntro:'Select a moon to see its NASA record.',previous:'Previous',next:'Next',noMoons:'No natural moons',moon:'Moon',page:'page'},fr:{language:'Langue',voice:'Voix',on:'Narration activée',off:'Narration désactivée',heading:'THE SOLAR EXPEDITION',sub:'Vous êtes au Soleil. Sélectionnez une planète pour découvrir ses lunes.',back:'Vue d’ensemble',diameter:'Diamètre',year:'Année orbitale',moons:'Lunes du catalogue',illustrative:'Tailles, distances et orbites des lunes sont illustratives.',sources:'Sources NASA',discovery:'Découverte',moonIntro:'Sélectionnez une lune pour voir sa fiche NASA.',previous:'Précédent',next:'Suivant',noMoons:'Aucune lune naturelle',moon:'Lune',page:'page'}};
 const nasaPlanetFacts='https://nssdc.gsfc.nasa.gov/planetary/factsheet/';
 const nasaMoonCatalogue='https://ssd.jpl.nasa.gov/sats/discovery.html';
@@ -23,11 +35,57 @@ function el(tag,cls,text){const node=document.createElement(tag);if(cls)node.cla
 function globe(p,size){const node=el('span','globe');node.style.setProperty('--texture',`url("assets/${p.name}.jpg")`);node.style.setProperty('--diameter',size);node.style.setProperty('--glow',colors[catalog.indexOf(p)]+'77');if(p.name!=='Saturn'&&p.name!=='Uranus')return node;const system=el('span','ring-system '+p.name.toLowerCase());system.style.setProperty('--diameter',size);system.append(el('span','ring-art ring-back'),node,el('span','ring-art ring-front'));return system}
 function moonAsset(m){return typeof assetUrl==='function'?assetUrl(m.image.slice(7)):m.image}
 function moonVisual(m){const wrap=el('div','moon-closeup'+(m.image?' has-image':''));if(m.mappedSurface){const globe=el('span','globe moon-mapped-globe');globe.style.setProperty('--diameter','100%');globe.style.setProperty('--texture',`url("${moonAsset(m)}")`);globe.style.setProperty('--glow','#b4c9dd77');wrap.append(globe)}else if(m.image){const img=el('img','moon-portrait');img.src=moonAsset(m);img.alt=(language.value==='fr'?'Image NASA de ':'NASA image of ')+m.name;img.style.maxWidth=`${m.imageWidth}px`;img.style.maxHeight=`${m.imageHeight}px`;wrap.append(img)}else{wrap.append(el('div','moon-neutral'));wrap.setAttribute('aria-label',language.value==='fr'?'Modèle neutre sans image vérifiée':'Neutral model; no verified image')}return wrap}
-function stopAudio(){audio.pause();audio.currentTime=0}
-function playAudio(){stopAudio();if(!narrationOn||selected<0||chosenMoon)return;const p=catalog[selected];audio.src=`audio/${p.name}_${voice.value}.wav`;audio.play().catch(()=>{status.textContent=language.value==='fr'?'Touchez une planète pour activer le son.':'Select a planet to enable audio.'})}
-function updateControls(){const fr=language.value==='fr',previous=voice.value;voice.replaceChildren();for(const item of fr?['estelle']:['anna','charles']){const option=el('option','',item[0].toUpperCase()+item.slice(1));option.value=item;voice.append(option)}if([...voice.options].some(option=>option.value===previous))voice.value=previous;document.querySelector('#languageLabel').textContent=t('language');document.querySelector('#voiceLabel').textContent=t('voice');document.querySelector('#soundLabel').textContent=t(narrationOn?'on':'off');sound.setAttribute('aria-pressed',String(narrationOn));document.documentElement.lang=language.value}
-function overview(){const title=el('h1','overview-heading',t('heading'));scene.append(title,el('p','overview-sub',t('sub')));catalog.forEach((p,i)=>{const btn=el('button','world');btn.type='button';btn.style.left=(6.25+i*12.5)+'%';btn.setAttribute('aria-label',nameOf(p));const size=`min(${(sizes[i]*.75).toFixed(2)}vw,${(sizes[i]*5.5).toFixed(2)}vh)`;btn.append(globe(p,size),el('span','world-label',nameOf(p)));btn.onclick=()=>select(i);scene.append(btn)});const astronaut=el('img','astronaut');astronaut.src='assets/astronaut-float.webp';astronaut.alt='Floating astronaut';scene.append(astronaut)}
-function select(i){selected=i;chosenMoon=null;status.textContent='';render();playAudio()}
+let audioQueue=[];
+function stopAudio(){audioQueue=[];audio.pause();audio.currentTime=0;audio.removeAttribute('src');audio.load()}
+function narrationSource(key){return typeof NARRATION_AUDIO==='object'?NARRATION_AUDIO[key]:`audio/narration/${key}.mp3`}
+function nextAudio(){const key=audioQueue.shift();if(!key)return;audio.src=narrationSource(key);audio.play().catch(()=>{status.textContent=language.value==='fr'?'Touchez un élément pour activer le son.':'Select an item to enable audio.'})}
+audio.onended=nextAudio;
+audio.onerror=()=>{if(audio.getAttribute('src'))status.textContent=language.value==='fr'?'Enregistrement introuvable pour cette sélection.':'Recording unavailable for this selection.'};
+function playAudio(){stopAudio();if(!narrationOn)return;const who=voice.value;if(learningAudio)audioQueue.push(`${learningAudio}-${who}`);else if(selected<0)audioQueue.push(`overview-${who}`);else{const p=catalog[selected];audioQueue.push(chosenMoon?`moon-${p.name}-${p.moons.indexOf(chosenMoon)}-${who}`:`planet-${p.name}-${who}`)}nextAudio()}
+function updateControls(){const fr=language.value==='fr',previous=voice.value;voice.replaceChildren();for(const item of fr?['estelle']:['anna','charles']){const option=el('option','',item[0].toUpperCase()+item.slice(1));option.value=item;voice.append(option)}if([...voice.options].some(option=>option.value===previous))voice.value=previous;document.querySelector('#languageLabel').textContent=t('language');document.querySelector('#voiceLabel').textContent=t('voice');document.querySelector('#soundLabel').textContent=t(narrationOn?'on':'off');sound.setAttribute('aria-pressed',String(narrationOn));replay.setAttribute('aria-label',fr?'Réécouter la narration':'Replay narration');replay.title=replay.getAttribute('aria-label');document.documentElement.lang=language.value}
+function overview(){const title=el('h1','overview-heading',t('heading'));scene.append(title,el('p','overview-sub',t('sub')));catalog.forEach((p,i)=>{const btn=el('button','world');btn.type='button';btn.style.left=(6.25+i*12.5)+'%';btn.setAttribute('aria-label',nameOf(p));const size=`min(${(sizes[i]*.75).toFixed(2)}vw,${(sizes[i]*5.5).toFixed(2)}vh)`;btn.append(globe(p,size),el('span','world-label',nameOf(p)));btn.onclick=()=>select(i);scene.append(btn)})}
+function addAmbientCraft(){
+  const rocket=el('img','spacecraft rocket');
+  rocket.src='assets/rocket-cutout.png';
+  rocket.alt='';
+  rocket.setAttribute('aria-hidden','true');
+  const station=el('img','spacecraft space-station');
+  station.src='assets/station-cutout.png';
+  station.alt='';
+  station.setAttribute('aria-hidden','true');
+  const astronaut=el('img','astronaut');
+  astronaut.src='assets/astronaut-float.webp';
+  astronaut.alt='Floating astronaut';
+  ambient.append(rocket,station,astronaut);
+}
+function select(i){selected=i;chosenMoon=null;learningAudio=null;status.textContent='';render();playAudio()}
+function hotspotFact(p,m){
+  if(!m){const fact=discoveries[p.name][language.value];return {title:fact[0],text:fact[1],url:p.source,audioKey:`planet-${p.name}`}}
+  const fr=language.value==='fr';
+  const text=m.mappedSurface?(fr?'Ce globe utilise une carte de la Lune publiée par la NASA. Sa rotation est une animation illustrative.':'This globe uses a NASA lunar map. Its rotation is an illustrative animation.'):m.image?(fr?'Cette photographie de mission montre une vue observée de la lune, et non une carte complète de sa surface.':'This mission photograph shows one observed view of the moon, rather than a complete surface map.'):(fr?'La NASA et le JPL répertorient cette lune. Aucune image de surface vérifiée n’est montrée ici.':'NASA and JPL catalogue this moon. No verified surface image is shown here.');
+  return {title:fr?'Ce que montre cette image':'What this image shows',text,url:m.imageSource||nasaMoonCatalogue,audioKey:`hotspot-moon-${m.mappedSurface?'mapped':m.image?'image':'neutral'}`}
+}
+function addHotspot(panel,focus,p,m){
+  const fact=hotspotFact(p,m),fr=language.value==='fr';
+  const pin=el('button','hotspot-pin','?');pin.type='button';pin.setAttribute('aria-label',fr?'Que voit-on ici ?':'What am I seeing?');pin.title=pin.getAttribute('aria-label');
+  const card=el('section','hotspot-card');card.hidden=true;
+  card.append(el('span','hotspot-kicker',fr?'QUE VOIT-ON ICI ?':'WHAT AM I SEEING?'),el('h2','',fact.title),el('p','',fact.text),sourceLink('NASA · '+(m?m.name:p.name),fact.url));
+  pin.onclick=()=>{card.hidden=!card.hidden;pin.setAttribute('aria-expanded',String(!card.hidden));learningAudio=card.hidden?null:fact.audioKey;if(!card.hidden){panel.scrollTop=0;playAudio()}else stopAudio()};
+  pin.setAttribute('aria-expanded','false');focus.append(pin);panel.insertBefore(card,panel.querySelector('.planet-summary'))
+}
+function addScaleMoment(panel,p){
+  const fr=language.value==='fr',earth=catalog.find(item=>item.name==='Earth'),ratio=p.diameter/earth.diameter;
+  const button=el('button','learning-button',fr?'◉ Moment d’échelle':'◉ Scale moment');button.type='button';button.setAttribute('aria-expanded','false');
+  const card=el('section','scale-card');card.hidden=true;
+  card.append(el('span','hotspot-kicker',fr?'TAILLES RÉELLES COMPARÉES':'REAL SIZE COMPARISON'),el('h2','',`${nameOf(p)} / ${fr?'Terre':'Earth'}`));
+  const stage=el('div','scale-stage');
+  for(const [planet,label,diameter] of [[earth,fr?'Terre':'Earth',earth.diameter],[p,nameOf(p),p.diameter]]){
+    const item=el('div','scale-item');const circle=el('span','scale-circle');circle.style.setProperty('--scale-size',`${Math.max(3,Math.round(140*diameter/Math.max(p.diameter,earth.diameter)))}px`);circle.style.setProperty('--scale-color',colors[catalog.indexOf(planet)]);item.append(circle,el('strong','',label));stage.append(item)
+  }
+  card.append(stage,el('p','',fr?`${nameOf(p)} mesure environ ${ratio.toLocaleString('fr-FR',{maximumFractionDigits:2})} fois le diamètre de la Terre. Les deux disques ci-dessus sont dessinés à la même échelle; les distances orbitales ne le sont pas.`:`${nameOf(p)} is about ${ratio.toLocaleString('en-US',{maximumFractionDigits:2})} times Earth's diameter. Both discs above use the same scale; orbital distances do not.`),sourceLink('NASA · planetary measurements',nasaPlanetFacts));
+  button.onclick=()=>{card.hidden=!card.hidden;button.setAttribute('aria-expanded',String(!card.hidden));learningAudio=card.hidden?null:`scale-${p.name}`;if(!card.hidden)playAudio();else stopAudio()};
+  panel.append(button,card)
+}
 function surroundingWorlds(){
   // The selected world occupies the central viewing sector; its neighbours
   // remain around the rest of the cylinder as quiet, selectable landmarks.
@@ -50,14 +108,6 @@ function surroundingWorlds(){
 function detail(){
   const p=catalog[selected];
   surroundingWorlds();
-  if(chosenMoon){
-    const parent=el('button','parent-world');
-    parent.type='button';
-    parent.setAttribute('aria-label',(language.value==='fr'?'Retour à ':'Back to ')+nameOf(p));
-    parent.append(globe(p,'100%'),el('span','ambient-label',nameOf(p)));
-    parent.onclick=()=>{chosenMoon=null;render();playAudio()};
-    scene.append(parent);
-  }
   const focus=el('div','focus-globe');focus.append(chosenMoon?moonVisual(chosenMoon):globe(p,'100%'));scene.append(focus);
   const panel=el('article','planet-panel '+(chosenMoon?'moon-detail':'planet-detail'));
   if(chosenMoon){
@@ -66,16 +116,19 @@ function detail(){
     panel.append(el('p','planet-summary',m.profile?(language.value==='fr'?m.profile.fr:m.profile.en):(language.value==='fr'?`Satellite naturel de ${nameOf(p)}. La NASA/JPL répertorie sa découverte; aucune description de surface vérifiée n’est présentée ici.`:`Natural satellite of ${nameOf(p)}. NASA/JPL records its discovery; no verified surface description is presented here.`)));
     const stats=el('div','stat-grid moon-stat-grid');for(const [label,value] of [[language.value==='fr'?'ORBITE AUTOUR DE':'ORBITS',nameOf(p)],[t('discovery'),m.year||'—']]){const card=el('div','stat-card');card.append(el('span','stat-label',label),el('strong','stat-value',value));stats.append(card)}panel.append(stats);
     panel.append(el('p','visual-caption',m.mappedSurface?(language.value==='fr'?'Carte lunaire NASA/LRO · globe illustré.':'NASA/LRO lunar map · rendered globe.'):m.image?(language.value==='fr'?'Image NASA · vue observée.':'NASA image · observed view.'):language.value==='fr'?'Aucune image vérifiée · modèle neutre.':'No verified image · neutral model.'));
+    addHotspot(panel,focus,p,m);
     const sources=el('details','source-notes');sources.append(el('summary','',t('sources')));if(!(p.name==='Earth'&&m.name==='Moon'))sources.append(sourceLink('NASA/JPL · '+m.name,nasaMoonCatalogue));if(m.profile)sources.append(sourceLink('NASA Science · '+m.name,m.profile.source));if(m.imageSource)sources.append(sourceLink('NASA · image',m.imageSource));panel.append(sources);
   }else{
     panel.append(el('div','eyebrow',language.value==='fr'?'ATLAS PLANÉTAIRE':'PLANETARY ATLAS'),el('h1','',nameOf(p)),el('p','planet-summary',language.value==='fr'?p.french:p.english));
     const stats=el('div','stat-grid');
     for(const [label,value] of [[t('diameter')+(language.value==='fr'?' équatorial':' (equatorial)'),`${p.diameter.toLocaleString(language.value==='fr'?'fr-FR':'en-US')} km`],[t('year'),language.value==='fr'?p.yearFrench:p.year],[t('moons'),String(p.moons.length)]]){const card=el('div','stat-card');card.append(el('span','stat-label',label),el('strong','stat-value',value));stats.append(card)}
     panel.append(stats,el('p','disclaimer',t('illustrative')));
+    addHotspot(panel,focus,p,null);
+    addScaleMoment(panel,p);
     const sources=el('details','source-notes');sources.append(el('summary','',t('sources')),sourceLink('NASA Science · '+p.name,p.source),sourceLink('NASA · planetary measurements',nasaPlanetFacts));panel.append(sources);
   }
   scene.append(panel);
-  const back=el('button','action back',chosenMoon?(language.value==='fr'?'Planète':'Planet'):t('back'));back.type='button';back.onclick=()=>{if(chosenMoon){chosenMoon=null;render();playAudio()}else{selected=-1;stopAudio();render()}};scene.append(back);
+  const back=el('button','action back',chosenMoon?(language.value==='fr'?'Planète':'Planet'):t('back'));back.type='button';back.onclick=()=>{learningAudio=null;if(chosenMoon){chosenMoon=null;render();playAudio()}else{selected=-1;stopAudio();render()}};scene.append(back);
   drawMoons(p,panel);
 }
 function visibleMoons(p){const all=p.moons||[];return chosenMoon?[chosenMoon,...all.filter(m=>m!==chosenMoon)].slice(0,4):all.slice(0,4)}
@@ -87,7 +140,7 @@ function drawMoons(p,panel){
     const track=el('span','orbit-track');track.dataset.orbit=String(i);field.append(track);
     const btn=el('button','moon');btn.type='button';btn.dataset.orbit=String(i);btn.style.setProperty('--size',(i===0?1.35:1.05)+'vw');
     const rock=el('span','rock');if(m.image){rock.classList.add('moon-photographed');rock.style.backgroundImage=`url("${moonAsset(m)}")`}
-    btn.append(rock,el('span','',m.name));btn.onclick=()=>{chosenMoon=m;stopAudio();render()};field.append(btn);
+    btn.append(rock,el('span','',m.name));btn.onclick=()=>{learningAudio=null;chosenMoon=m;render();playAudio()};field.append(btn);
   }
   scene.append(field)}
   if(!moons.length||(chosenMoon&&moons.length===1))return;
@@ -95,17 +148,27 @@ function drawMoons(p,panel){
   const heading=el('div','moon-library-heading');heading.append(el('h2','',language.value==='fr'?'Explorer les lunes':'Explore moons'),el('span','moon-count',String(moons.length)));library.append(heading);
   const search=el('input','moon-search');search.type='search';search.placeholder=language.value==='fr'?'Rechercher une lune':'Search moons';search.setAttribute('aria-label',search.placeholder);if(moons.length>8)library.append(search);
   const list=el('div','moon-list');
-  for(const m of moons){const btn=el('button','moon-entry'+(m===chosenMoon?' selected':''),m.name);btn.type='button';btn.onclick=()=>{chosenMoon=m;stopAudio();render()};list.append(btn)}
+  for(const m of moons){const btn=el('button','moon-entry'+(m===chosenMoon?' selected':''),m.name);btn.type='button';btn.onclick=()=>{learningAudio=null;chosenMoon=m;render();playAudio()};list.append(btn)}
   search.oninput=()=>{const query=search.value.trim().toLocaleLowerCase();for(const btn of list.children)btn.hidden=!btn.textContent.toLocaleLowerCase().includes(query)};
   library.append(list);panel.append(library);
 }
 let orbitGeometry=null;
-function render(){orbitGeometry=null;scene.replaceChildren();updateControls();if(selected<0)overview();else detail()}
+function render(){orbitGeometry=null;scene.replaceChildren();document.body.classList.toggle('detail-active',selected>=0);if(!ambient.childElementCount)addAmbientCraft();updateControls();if(selected<0)overview();else detail()}
 window.addEventListener('resize',()=>{orbitGeometry=null});
-language.onchange=()=>{render();if(selected>=0)playAudio()};voice.onchange=()=>{if(selected>=0)playAudio()};sound.onclick=()=>{narrationOn=!narrationOn;updateControls();if(narrationOn)playAudio();else stopAudio()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&selected>=0){selected=-1;stopAudio();render()}else if(e.key==='ArrowRight'&&selected>=0){select((selected+1)%catalog.length)}else if(e.key==='ArrowLeft'&&selected>=0){select((selected+catalog.length-1)%catalog.length)}});
+language.onchange=()=>{learningAudio=null;render();playAudio()};voice.onchange=playAudio;sound.onclick=()=>{narrationOn=!narrationOn;updateControls();if(narrationOn)playAudio();else stopAudio()};replay.onclick=()=>{if(!narrationOn){narrationOn=true;updateControls()}playAudio()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&selected>=0){learningAudio=null;selected=-1;stopAudio();render()}else if(e.key==='ArrowRight'&&selected>=0){select((selected+1)%catalog.length)}else if(e.key==='ArrowLeft'&&selected>=0){select((selected+catalog.length-1)%catalog.length)}});
+let astronautX=null,astronautY=null,lastFrameTime=0;
 function animate(time){
-  const seconds=time/1000,astronaut=document.querySelector('.astronaut');
-  if(astronaut){const bounds=scene.getBoundingClientRect(),w=astronaut.offsetWidth,h=astronaut.offsetHeight;const x=(.5+.46*Math.sin(seconds*.037))*(bounds.width-w),y=(.5+.43*Math.sin(seconds*.061+1.1))*(bounds.height-h);astronaut.style.transform=`translate3d(${x}px,${y}px,0) rotate(${7*Math.sin(seconds*.047)}deg)`}
+  const seconds=time/1000,astronaut=ambient.querySelector('.astronaut');
+  if(astronaut){
+    const bounds=ambient.getBoundingClientRect(),w=astronaut.offsetWidth,h=astronaut.offsetHeight,detail=selected>=0;
+    const targetX=(detail ? .03+.1*(.5+.5*Math.sin(seconds*.037)) : .5+.46*Math.sin(seconds*.037))*(bounds.width-w);
+    const targetY=(detail ? .72+.07*Math.sin(seconds*.061+1.1) : .5+.43*Math.sin(seconds*.061+1.1))*(bounds.height-h);
+    const delta=Math.min(Math.max((time-lastFrameTime)/1000,0),.1),blend=1-Math.exp(-2.8*delta);
+    astronautX=astronautX===null?targetX:astronautX+(targetX-astronautX)*blend;
+    astronautY=astronautY===null?targetY:astronautY+(targetY-astronautY)*blend;
+    astronaut.style.transform=`translate3d(${astronautX}px,${astronautY}px,0) rotate(${7*Math.sin(seconds*.047)}deg)`;
+  }
+  lastFrameTime=time;
   const field=document.querySelector('.moon-field'),focus=document.querySelector('.focus-globe');
   if(field&&focus){
     if(!orbitGeometry||orbitGeometry.field!==field){const area=field.getBoundingClientRect(),body=focus.getBoundingClientRect();orbitGeometry={field,cx:body.left+body.width/2-area.left,cy:body.top+body.height/2-area.top,base:body.width/2+Math.max(30,body.width*.13),gap:Math.max(18,body.width*.07)};for(const track of field.querySelectorAll('.orbit-track')){const i=Number(track.dataset.orbit),radius=orbitGeometry.base+i*orbitGeometry.gap;track.style.left=orbitGeometry.cx+'px';track.style.top=orbitGeometry.cy+'px';track.style.width=2*radius+'px';track.style.height=2*radius+'px'}}

@@ -10,11 +10,13 @@
 <body>
   <main id="panorama" aria-label="The Solar Expedition panorama">
     <div class="stars" aria-hidden="true"></div>
+    <div id="ambient" aria-hidden="true"></div>
     <div id="scene"></div>
     <nav class="toolbar" aria-label="Experience controls">
       <label><span id="languageLabel" class="sr-only">Language</span><select id="language" aria-label="Language"><option value="en">English</option><option value="fr">Français</option></select></label>
       <label><span id="voiceLabel" class="sr-only">Voice</span><select id="voice" aria-label="Voice"><option value="anna">Anna</option><option value="charles">Charles</option></select></label>
       <button id="sound" type="button" aria-pressed="true">🔊 <span id="soundLabel">Narration on</span></button>
+      <button id="replay" type="button" aria-label="Replay narration" title="Replay narration">↻</button>
       <button id="music" type="button" aria-label="Play universe music">♪</button>
     </nav>
     <p id="status" role="status" aria-live="polite"></p>

@@ -5,12 +5,13 @@ button,select{font:inherit}button{cursor:pointer}
 .stars{position:absolute;inset:0;background:url('assets/Stars.jpg') center/100% 100% no-repeat;opacity:.77}
 .stars:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#020713b0 96%)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-#scene{position:absolute;inset:0}
-.toolbar{position:absolute;left:1.2%;top:42%;display:flex;align-items:center;gap:.35vw;background:#061223d9;border:1px solid #6a91b55c;border-radius:.4vw;padding:.35vw .5vw;box-shadow:0 .3vw 1vw #0009}
+#ambient{position:absolute;z-index:0;inset:0;overflow:hidden;pointer-events:none}
+#scene{position:absolute;z-index:1;inset:0}
+.toolbar{position:absolute;z-index:2;left:1.2%;top:42%;display:flex;align-items:center;gap:.35vw;background:#061223d9;border:1px solid #6a91b55c;border-radius:.4vw;padding:.35vw .5vw;box-shadow:0 .3vw 1vw #0009}
 .toolbar label{display:flex;align-items:center;gap:.25vw;font-size:.5vw;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .toolbar select,.toolbar button,.action{background:#143149;color:#fff;border:1px solid #8ecfff81;border-radius:.25vw;min-height:1.25vw;padding:.2vw .45vw;font-size:.59vw}
 .toolbar button:hover,.action:hover,.moon-page button:hover{background:#226081}
-#status{position:absolute;right:1.2%;bottom:40%;margin:0;font-size:.5vw;color:#b9d6eb;max-width:16%;text-align:right}
+#status{position:absolute;z-index:2;right:1.2%;bottom:40%;margin:0;font-size:.5vw;color:#b9d6eb;max-width:16%;text-align:right}
 .overview-heading{position:absolute;left:42%;top:40%;width:16%;text-align:center;font-size:.9vw;letter-spacing:.16em;text-shadow:0 0 .5vw #000}
 .overview-sub{position:absolute;left:38%;top:44%;width:24%;text-align:center;font-size:.46vw;color:#b9cfe1}
 .world{position:absolute;top:51%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:.28vw;background:none;border:0;color:white;padding:.3vw;min-width:5vw;text-shadow:0 0 .3vw #000,0 0 .4vw #000}
@@ -28,7 +29,7 @@ button,select{font:inherit}button{cursor:pointer}
 .ring-system.uranus{--ring-image:url('assets/UranusRings.svg');--ring-tilt:-69deg}
 .ring-system.uranus .ring-art{left:-45%;width:190%;opacity:.88}
 .focus-globe .globe:before{animation-duration:55s}
-.astronaut{position:absolute;left:0;top:0;width:4%;height:auto;pointer-events:none;filter:drop-shadow(0 0 .4vw #8acfff66);transform:translate3d(0,0,0);will-change:transform}
+.astronaut{position:absolute;z-index:0;left:0;top:0;width:4%;height:auto;pointer-events:none;filter:drop-shadow(0 0 .4vw #8acfff66);transform:translate3d(0,0,0);will-change:transform}
 body.preview .astronaut{width:clamp(68px,10vw,130px)}
 @keyframes spinTexture{to{transform:translate3d(-50%,0,0)}}
 @keyframes orbitDrift{to{translate:1.2vw -.35vw}}
@@ -122,6 +123,8 @@ body.cylinder .overview-sub{left:38%;top:14%;width:24%;font-size:20px}
 body.cylinder .world{top:53%;min-width:5vw;gap:12px;padding:8px}
 body.cylinder .world-label{font-size:23px}
 body.cylinder .astronaut{width:150px}
+body.preview.detail-active .astronaut{width:clamp(65px,7vw,105px);opacity:.68}
+body.cylinder.detail-active .astronaut{width:130px;opacity:.68}
 body.cylinder .focus-globe{left:43%;top:49%;width:52vh;height:52vh}
 body.cylinder .planet-panel{left:51%;top:17%;width:min(9vw,900px);height:62vh;padding:22px 28px;border-radius:10px;overflow:auto}
 body.cylinder .planet-panel h1{font-size:32px;margin:0 0 16px}
@@ -197,15 +200,36 @@ body.cylinder .back{left:calc(51% + min(4.5vw,450px));width:220px;min-width:0;mi
 .world:hover .world-label,.world:focus-visible .world-label{color:#fff8e7;border-color:#e7c58a;background:#1b4258}
 .toolbar select,.toolbar button{color:#f4ead7}
 #status{color:#bad5e2}
+/* Decorative spacecraft use compositor transforms and stay behind the exhibit. */
+.spacecraft{position:absolute;z-index:0;display:block;height:auto;pointer-events:none;user-select:none;object-fit:contain;opacity:.7;filter:drop-shadow(0 0 .7vw #8acfff44);will-change:transform;backface-visibility:hidden;transition:left .8s ease,top .8s ease,width .8s ease,opacity .8s ease}
+.rocket{left:-12%;top:35%;width:clamp(90px,7vw,220px);animation:rocketCruise 115s linear infinite;animation-delay:-20s}
+.space-station{left:73%;top:23%;width:clamp(150px,11vw,340px);opacity:.57;animation:stationFloat 38s ease-in-out infinite alternate}
+body.preview.detail-active .space-station{left:2%;top:8%;width:clamp(120px,13vw,210px);opacity:.7}
+body.cylinder.detail-active .space-station{top:20%;opacity:.7}
+@keyframes rocketCruise{from{transform:translate3d(0,0,0) rotate(-2deg)}to{transform:translate3d(124vw,-6vh,0) rotate(3deg)}}
+@keyframes stationFloat{from{transform:translate3d(-2vw,-1vh,0) rotate(-2deg)}to{transform:translate3d(2vw,1vh,0) rotate(2deg)}}
+.world{z-index:1}
+@media (prefers-reduced-motion:reduce){.rocket{left:12%;animation:none}.space-station{animation:none}}
+/* Optional learning layers stay within the selected world's field guide. */
+.hotspot-pin{position:absolute;z-index:5;right:-6%;top:8%;width:42px;height:42px;border:2px solid #e7c58a;border-radius:50%;background:#103a50;color:#fff;font-size:23px;font-weight:700;box-shadow:0 0 0 6px #e7c58a28,0 0 20px #000b;pointer-events:auto}
+.hotspot-pin:hover,.hotspot-pin:focus-visible{background:#226783;transform:scale(1.08)}
+.hotspot-card,.scale-card{margin:.85em 0;padding:.8em 1em;border:1px solid #8ecfff88;border-radius:9px;background:#0d2a3bcc;box-shadow:inset 0 1px #ffffff18}
+.hotspot-card[hidden],.scale-card[hidden]{display:none}
+.hotspot-kicker{display:block;color:#e8c58c;font-size:.78em;font-weight:700;letter-spacing:.12em}
+.hotspot-card h2,.scale-card h2{margin:.3em 0;font:normal 1.18em Georgia,'Times New Roman',serif;color:#fff}
+.learning-button{display:block;width:100%;padding:.55em .7em;margin:.8em 0;border:1px solid #8ecfff88;border-radius:7px;background:#173f58;color:#f6f3e9;font:inherit;font-weight:700;text-align:left;cursor:pointer}
+.learning-button:hover,.learning-button:focus-visible{background:#276c88;border-color:#e7c58a}
+.scale-stage{display:flex;justify-content:center;align-items:end;gap:1.5em;min-height:150px;padding:.7em 0}
+.scale-item{display:flex;flex:1;min-width:0;flex-direction:column;align-items:center;justify-content:end;gap:.5em;text-align:center}
+.scale-circle{display:block;flex:none;width:var(--scale-size);height:var(--scale-size);max-width:100%;max-height:140px;border-radius:50%;background:radial-gradient(circle at 30% 27%,#ffffff9c,var(--scale-color) 46%,#081422 95%);box-shadow:0 0 18px var(--scale-color),inset -10px -8px 18px #0008}
+.scale-item strong{font-size:.85em}
+body.cylinder .hotspot-pin{width:46px;height:46px;font-size:26px}
 /* Keep the other worlds present without competing with the selected body. */
-.ambient-world,.parent-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;cursor:pointer;transition:opacity .25s,filter .25s}
+.ambient-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;cursor:pointer;transition:opacity .25s,filter .25s}
 .ambient-world{left:var(--preview-x);top:93%;transform:translate(-50%,-50%);width:10%;opacity:.52;filter:saturate(.72)}
-.ambient-world:hover,.ambient-world:focus-visible,.parent-world:hover,.parent-world:focus-visible{opacity:1;filter:saturate(1) brightness(1.18)}
+.ambient-world:hover,.ambient-world:focus-visible{opacity:1;filter:saturate(1) brightness(1.18)}
 .ambient-label{font-size:clamp(10px,.95vw,15px);font-weight:600;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap}
-.parent-world{left:9%;top:48%;transform:translate(-50%,-50%);width:clamp(50px,8vw,115px);height:auto;opacity:.7}
-.parent-world>.globe,.parent-world>.ring-system{width:100%;height:auto;aspect-ratio:1}
-.focus-globe,.planet-panel,.action.back,.moon-field{z-index:2}
+.planet-panel,.action.back,.moon-field{z-index:2}
+.focus-globe{z-index:3}
 body.cylinder .ambient-world{left:var(--cylinder-x);top:53%;width:7vw;gap:10px}
 body.cylinder .ambient-label{font-size:18px}
-body.cylinder .parent-world{left:34%;top:50%;width:min(3vw,320px)}
-body.cylinder .parent-world .ambient-label{font-size:18px}

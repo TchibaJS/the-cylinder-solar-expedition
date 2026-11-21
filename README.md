@@ -4,9 +4,11 @@
 
 This folder is the separate GitHub Pages project for the Igloo cylinder. Its public address is `https://tchibajs.github.io/the-cylinder-solar-expedition/`. The Capsule Edition is a different repository and is not changed by edits here.
 
-After changing this project, commit and push it from GitHub Desktop. Wait for GitHub Pages to finish publishing, then refresh the WebView on the central computer. When `app.js` or `styles.css` changes, increase the `?v=` number on the corresponding references in `index.html` before committing; that makes the refreshed page request the newest files.
+After changing this project, commit and push it from GitHub Desktop. Wait for GitHub Pages to finish publishing, then refresh the WebView on the central computer. If the WebView keeps an older cached copy, use its full reload or clear that layer's browser cache.
 
-The current trial keeps the other seven planets visible as subdued, selectable landmarks during a planet or moon close-up. A moon close-up also shows its parent planet nearby.
+The current trial keeps the other seven planets visible as subdued, selectable landmarks during a planet or moon close-up. The Planet button returns from a moon to its parent planet.
+The panorama also includes the supplied spacecraft image, a space station, and an astronaut. They remain in the background during close-ups, move smoothly, and do not intercept clicks.
+In a close-up, tap the question-mark hotspot on a world to learn what its visible features or image represent. Planet views also offer a Scale moment that compares the planet's equatorial diameter with Earth's using NASA measurements. Both learning features are optional and link to their sources.
 
 This is a separate, offline web version of the Unity experience. In the venue's wide WebView it renders a flat panoramic strip for the cylinder. It does not need Unity, the Igloo Unity Toolkit, Spout, or a Windows build. See [Cylinder starter guide](../CYLINDER_STARTER_GUIDE.md) for the current installation findings and setup steps.
 
@@ -14,7 +16,7 @@ This is a separate, offline web version of the Unity experience. In the venue's 
 
 - Eight selectable planets arranged around the 360° panorama.
 - Planet images, 461 entries from the existing moon catalogue, English and French descriptions.
-- Existing Anna and Charles English narration and Estelle French narration. Narration starts when a visitor selects a planet. Browser audio requires that first interaction.
+- Anna and Charles English narration and Estelle French narration for every catalogue moon, planet, learning moment, and the overview. The ↻ button replays the current view; browsers require a visitor click before audio can play.
 - A visible Back button, moon page controls, and Esc/arrow keyboard shortcuts.
 - Animated planet positions and textures, orbiting moon markers, Saturn and Uranus rings, a floating astronaut, and a denser star field.
 - The original Hologram box ambient music, started with the ♪ button. Browsers require a visitor click before music can play.
@@ -42,6 +44,7 @@ The exact crop, scale, mouse mapping, and audio routing must be checked on the r
 - `data/catalogue.js`: planet and moon data loaded without a network request, so local file access can work.
 - `data/catalogue.json`: an editable copy of the same catalogue. If it changes, regenerate `catalogue.js` before running the page.
 - `assets/`: copied planet and background images from the existing Unity project.
-- `audio/`: copied narration from the existing Unity project.
+- `audio/narration/`: compressed recordings for the full catalogue and learning moments. Older Unity planet recordings also remain in `audio/` as archive files.
 
 Source material was reused from `Cylinder/Unity_Spout/SolarSystem360_SpoutTest/Assets/Resources/SolarSystem`. Keep the original asset provenance and permissions with the project when distributing it.
+
