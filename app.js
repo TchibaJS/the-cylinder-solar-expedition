@@ -9,7 +9,9 @@ const replay=document.querySelector('#replay');
 const wideCylinder=innerWidth/innerHeight>3;
 const projection=new URLSearchParams(location.search).get('projection')==='1'||wideCylinder;
 document.body.classList.toggle('preview',!projection);
-document.body.classList.toggle('cylinder',wideCylinder);
+document.body.classList.toggle('cylinder',projection);
+function updateProjectionScale(){document.documentElement.style.setProperty('--projection-x',String(projection?Math.min(1,(innerWidth/innerHeight)/(10876/999)):1))}
+updateProjectionScale();
 window.atlasLanguage=()=>language.value;
 window.narratorAudio=audio;
 const colors=['#bbb6ad','#eed2a3','#5fb7ff','#cf7756','#d8b899','#e0d0aa','#a2eef0','#6485ee'];
@@ -87,22 +89,16 @@ function addScaleMoment(panel,p){
   panel.append(button,card)
 }
 function surroundingWorlds(){
-  // The selected world occupies the central viewing sector; its neighbours
-  // remain around the rest of the cylinder as quiet, selectable landmarks.
-  const cylinderSlots=[70,79,88,97,6,17,28];
-  const previewSlots=[10,23,36,49,62,75,88];
-  for(let step=1;step<catalog.length;step++){
-    const index=(selected+step)%catalog.length;
+  // Keep the other planets at their overview longitudes during close-ups.
+  for(let index=0;index<catalog.length;index++){
+    if(index===selected)continue;
     const p=catalog[index];
-    const button=el('button','ambient-world');
-    button.type='button';
-    button.style.setProperty('--cylinder-x',cylinderSlots[step-1]+'%');
-    button.style.setProperty('--preview-x',previewSlots[step-1]+'%');
-    button.setAttribute('aria-label',(language.value==='fr'?'Explorer ':'Explore ')+nameOf(p));
-    const size=`min(${(sizes[index]*.36).toFixed(2)}vw,${(sizes[index]*4).toFixed(2)}vh)`;
-    button.append(globe(p,size),el('span','ambient-label',nameOf(p)));
-    button.onclick=()=>select(index);
-    scene.append(button);
+    const landmark=el('div','ambient-world');
+    landmark.style.left=(6.25+index*12.5)+'%';
+    landmark.setAttribute('aria-hidden','true');
+    const size=`min(${(sizes[index]*.48).toFixed(2)}vw,${(sizes[index]*4).toFixed(2)}vh)`;
+    landmark.append(globe(p,size),el('span','ambient-label',nameOf(p)));
+    scene.append(landmark);
   }
 }
 function detail(){
@@ -154,7 +150,7 @@ function drawMoons(p,panel){
 }
 let orbitGeometry=null;
 function render(){orbitGeometry=null;scene.replaceChildren();document.body.classList.toggle('detail-active',selected>=0);if(!ambient.childElementCount)addAmbientCraft();updateControls();if(selected<0)overview();else detail()}
-window.addEventListener('resize',()=>{orbitGeometry=null});
+window.addEventListener('resize',()=>{orbitGeometry=null;updateProjectionScale()});
 language.onchange=()=>{learningAudio=null;render();playAudio()};voice.onchange=playAudio;sound.onclick=()=>{narrationOn=!narrationOn;updateControls();if(narrationOn)playAudio();else stopAudio()};replay.onclick=()=>{if(!narrationOn){narrationOn=true;updateControls()}playAudio()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&selected>=0){learningAudio=null;selected=-1;stopAudio();render()}else if(e.key==='ArrowRight'&&selected>=0){select((selected+1)%catalog.length)}else if(e.key==='ArrowLeft'&&selected>=0){select((selected+catalog.length-1)%catalog.length)}});
 let astronautX=null,astronautY=null,lastFrameTime=0;
 function animate(time){
@@ -171,9 +167,9 @@ function animate(time){
   lastFrameTime=time;
   const field=document.querySelector('.moon-field'),focus=document.querySelector('.focus-globe');
   if(field&&focus){
-    if(!orbitGeometry||orbitGeometry.field!==field){const area=field.getBoundingClientRect(),body=focus.getBoundingClientRect();orbitGeometry={field,cx:body.left+body.width/2-area.left,cy:body.top+body.height/2-area.top,base:body.width/2+Math.max(30,body.width*.13),gap:Math.max(18,body.width*.07)};for(const track of field.querySelectorAll('.orbit-track')){const i=Number(track.dataset.orbit),radius=orbitGeometry.base+i*orbitGeometry.gap;track.style.left=orbitGeometry.cx+'px';track.style.top=orbitGeometry.cy+'px';track.style.width=2*radius+'px';track.style.height=2*radius+'px'}}
-    const {cx,cy,base,gap}=orbitGeometry;
-    for(const moon of field.querySelectorAll('.moon')){const i=Number(moon.dataset.orbit),radius=base+i*gap,angle=seconds*(.24/(1+i*.3))+i*Math.PI/2;moon.style.left=(cx+Math.cos(angle)*radius)+'px';moon.style.top=(cy+Math.sin(angle)*radius)+'px'}
+    if(!orbitGeometry||orbitGeometry.field!==field){const area=field.getBoundingClientRect(),body=focus.getBoundingClientRect(),xScale=projection?Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--projection-x'))||1:1;orbitGeometry={field,cx:body.left+body.width/2-area.left,cy:body.top+body.height/2-area.top,base:body.height/2+Math.max(30,body.height*.13),gap:Math.max(18,body.height*.07),xScale};for(const track of field.querySelectorAll('.orbit-track')){const i=Number(track.dataset.orbit),radius=orbitGeometry.base+i*orbitGeometry.gap;track.style.left=orbitGeometry.cx+'px';track.style.top=orbitGeometry.cy+'px';track.style.width=2*radius*xScale+'px';track.style.height=2*radius+'px'}}
+    const {cx,cy,base,gap,xScale}=orbitGeometry;
+    for(const moon of field.querySelectorAll('.moon')){const i=Number(moon.dataset.orbit),radius=base+i*gap,angle=seconds*(.24/(1+i*.3))+i*Math.PI/2;moon.style.left=(cx+Math.cos(angle)*radius*xScale)+'px';moon.style.top=(cy+Math.sin(angle)*radius)+'px'}
   }
   requestAnimationFrame(animate)
 }requestAnimationFrame(animate);

@@ -82,7 +82,7 @@ body.preview .astronaut{width:clamp(68px,10vw,130px)}
 .moon-page button{background:#143149;color:#fff;border:1px solid #8ecfff81;border-radius:.2vw;padding:.2vw .35vw;font-size:.43vw}
 .moon-note{position:absolute;left:34%;top:60%;width:25%;font-size:.4vw;color:#cfe5f4}
 button:focus-visible,select:focus-visible{outline:.12vw solid #fff;outline-offset:.12vw}
-/* The in-app desktop view is deliberately larger. ?projection=1 restores the 2:1 cylinder source. */
+/* The in-app desktop view is larger. ?projection=1 selects the cylinder strip. */
 body.preview #panorama{width:100vw;height:100vh}
 body.preview .stars{background-size:cover}
 body.preview .toolbar{left:2%;top:2%;gap:6px;padding:6px 8px;border-radius:7px}
@@ -125,8 +125,8 @@ body.cylinder .world-label{font-size:23px}
 body.cylinder .astronaut{width:150px}
 body.preview.detail-active .astronaut{width:clamp(65px,7vw,105px);opacity:.68}
 body.cylinder.detail-active .astronaut{width:130px;opacity:.68}
-body.cylinder .focus-globe{left:43%;top:49%;width:52vh;height:52vh}
-body.cylinder .planet-panel{left:51%;top:17%;width:min(9vw,900px);height:62vh;padding:22px 28px;border-radius:10px;overflow:auto}
+body.cylinder .focus-globe{left:43%;top:49%;width:52vh;height:52vh;transform:scaleX(var(--projection-x)) translate(-50%,-50%)}
+body.cylinder .planet-panel{left:51%;top:17%;width:900px;height:62vh;padding:22px 28px;border-radius:10px;overflow:auto;transform:scaleX(var(--projection-x));transform-origin:left center}
 body.cylinder .planet-panel h1{font-size:32px;margin:0 0 16px}
 body.cylinder .planet-panel p{font-size:22px;line-height:1.4;margin:12px 0}
 body.cylinder .planet-panel .facts{font-size:19px}
@@ -139,6 +139,7 @@ body.cylinder .stat-value{font-size:21px}
 body.cylinder .source-notes{font-size:17px}
 body.cylinder .back{left:51%;top:82%;min-width:min(9vw,900px)}
 body.cylinder .moon-field{left:38%;top:16%;width:10%;height:66%}
+body.cylinder .moon-field .moon{transform:scaleX(var(--projection-x)) translate(-50%,-50%)}
 body.cylinder .moon-field .moon{font-size:18px;max-width:160px}
 body.cylinder .moon .rock{width:28px;height:28px}
 body.cylinder .moon-page{left:38%;top:87%;width:10%;font-size:18px}
@@ -192,7 +193,8 @@ body.cylinder .planet-panel:before{margin:-22px 0 22px}
 .action.back{min-width:0;width:clamp(130px,8vw,220px);transform:translateX(-50%)}
 .action.back:hover,.action.back:focus-visible{transform:translate(-50%,-2px)}
 body.preview .back{left:73%;width:152px;min-width:0;min-height:40px;padding:7px 12px}
-body.cylinder .back{left:calc(51% + min(4.5vw,450px));width:220px;min-width:0;min-height:48px}
+body.cylinder .back{left:51%;width:220px;min-width:0;min-height:48px;transform:scaleX(var(--projection-x));transform-origin:left center}
+body.cylinder .back:hover,body.cylinder .back:focus-visible{transform:scaleX(var(--projection-x)) translateY(-2px)}
 /* Match the overview typography and labels to the field guide. */
 .overview-heading{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:.06em;color:#f8f2e7;text-shadow:0 3px 18px #000,0 0 28px #c9a66d40}
 .overview-sub{font-family:Arial,Helvetica,sans-serif;line-height:1.5;letter-spacing:.025em;color:#bad5e2;text-shadow:0 2px 10px #000}
@@ -225,11 +227,11 @@ body.cylinder.detail-active .space-station{top:20%;opacity:.7}
 .scale-item strong{font-size:.85em}
 body.cylinder .hotspot-pin{width:46px;height:46px;font-size:26px}
 /* Keep the other worlds present without competing with the selected body. */
-.ambient-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;cursor:pointer;transition:opacity .25s,filter .25s}
-.ambient-world{left:var(--preview-x);top:93%;transform:translate(-50%,-50%);width:10%;opacity:.52;filter:saturate(.72)}
-.ambient-world:hover,.ambient-world:focus-visible{opacity:1;filter:saturate(1) brightness(1.18)}
+.ambient-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;pointer-events:none;opacity:.18;filter:blur(3px) saturate(.45) brightness(.7)}
+.ambient-world{top:53%;transform:translate(-50%,-50%);width:10%}
 .ambient-label{font-size:clamp(10px,.95vw,15px);font-weight:600;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap}
 .planet-panel,.action.back,.moon-field{z-index:2}
 .focus-globe{z-index:3}
-body.cylinder .ambient-world{left:var(--cylinder-x);top:53%;width:7vw;gap:10px}
+body.cylinder .ambient-world{top:53%;width:7vw;gap:10px;transform:scaleX(var(--projection-x)) translate(-50%,-50%);filter:blur(4px) saturate(.4) brightness(.65)}
 body.cylinder .ambient-label{font-size:18px}
+body.cylinder .world{transform:scaleX(var(--projection-x)) translate(-50%,-50%)}

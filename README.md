@@ -4,9 +4,10 @@
 
 This folder is the separate GitHub Pages project for the Igloo cylinder. Its public address is `https://tchibajs.github.io/the-cylinder-solar-expedition/`. The Capsule Edition is a different repository and is not changed by edits here.
 
-After changing this project, commit and push it from GitHub Desktop. Wait for GitHub Pages to finish publishing, then refresh the WebView on the central computer. If the WebView keeps an older cached copy, use its full reload or clear that layer's browser cache.
+In Igloo, set the WebView URL once to `https://tchibajs.github.io/the-cylinder-solar-expedition/?projection=1`. The query selects the cylinder layout even when Igloo reports a normal desktop browser viewport. After changing this project, commit and push it from GitHub Desktop. Wait for GitHub Pages to finish publishing, then refresh that WebView. If it keeps an older cached copy, use its full reload or clear that layer's browser cache.
 
-The current trial keeps the other seven planets visible as subdued, selectable landmarks during a planet or moon close-up. The Planet button returns from a moon to its parent planet.
+The current trial keeps the other seven planets visible as subdued background landmarks during a planet or moon close-up. The Planet button returns from a moon to its parent planet.
+During a close-up, the other planets remain at their overview positions as dim, softly blurred background landmarks. The information panel stays within a narrow reading sector of the cylinder.
 The panorama also includes the supplied spacecraft image, a space station, and an astronaut. They remain in the background during close-ups, move smoothly, and do not intercept clicks.
 In a close-up, tap the question-mark hotspot on a world to learn what its visible features or image represent. Planet views also offer a Scale moment that compares the planet's equatorial diameter with Earth's using NASA measurements. Both learning features are optional and link to their sources.
 
