@@ -1,6 +1,6 @@
 # The Solar Expedition — cylinder web atlas
 
-**Current project release: v28 (23 November 2026).** This folder holds the editable web source. In the local project workspace, the numbered offline release files, `The SolarExpedition_v28.html` and `The SolarExpedition_v28.zip`, are in `Cylinder/HTML`; they are not part of the GitHub Pages repository. The hosted copy lives in the separate `the-cylinder-solar-expedition` repository. The Hologram Box Capsule Edition is a separate project.
+**Current project release: v29 (23 November 2026).** This folder holds the editable web source. In the local project workspace, the numbered offline release files, `The SolarExpedition_v29.html` and `The SolarExpedition_v29.zip`, are in `Cylinder/HTML`; they are not part of the GitHub Pages repository. The hosted copy lives in the separate `the-cylinder-solar-expedition` repository. The Hologram Box Capsule Edition is a separate project.
 
 ## What visitors can do
 
@@ -14,7 +14,7 @@ The planet textures rotate and the first four moon markers move on illustrative 
 
 ## Current cylinder presentation
 
-The public website at `https://tchibajs.github.io/the-cylinder-solar-expedition/` uses the desktop layout in a normal browser. **For Igloo, save the WebView URL as `https://tchibajs.github.io/the-cylinder-solar-expedition/?projection=1`.** The parameter forces the cylinder layout even if Igloo reports a normal desktop-sized viewport. A browser with a genuinely very wide viewport also selects cylinder layout automatically. Add `?projection=1` to a local `index.html` or numbered standalone HTML file when using it on Igloo.
+Use the same URL in a normal browser and in Igloo: **`https://tchibajs.github.io/the-cylinder-solar-expedition/`**. The page selects desktop layout at ordinary screen sizes and cylinder layout when the WebView has the venue's very wide 10876 × 999 viewport. The plain URL is the intended permanent Igloo link. The `?projection=1` option remains available only for manual troubleshooting if a future Igloo setup reports the wrong viewport size; it is not part of normal use.
 
 The Igloo WebView has been tested as a flat panorama at about **10876 × 999 pixels**. Its controls can be operated with the Igloo tablet's Cast Mouse. This web version does not need Unity, the Igloo Unity Toolkit, Spout, or a Windows executable. Keep the WebView as a flat panoramic strip unless a different mapping is deliberately tested in the room.
 
@@ -22,13 +22,15 @@ The Igloo WebView has been tested as a flat panorama at about **10876 × 999 pix
 
 **v27 colour work:** the cylinder uses a single 10876 × 999 star background with a consistent dark base instead of repeating the original two-to-one sky image. This addresses alternating dark-blue/light-blue bands seen with this project in the venue. Check the result on the actual cylinder; Igloo's projector and browser settings can still affect the final image.
 
-**v28 website layout fix:** the root GitHub Pages URL no longer forces cylinder mode on every visitor. The desktop website is readable at ordinary screen sizes; the Igloo URL above explicitly selects the cylinder view.
+**v28 website layout fix:** the root GitHub Pages URL no longer forces cylinder mode on every visitor. The same plain URL selects the desktop or cylinder view from the actual viewport shape.
+
+**v29 cache fix:** the page requests `app.js?v=29`. GitHub Pages had published the v28 layout code, but an older cached script still made the live root URL look squeezed. Update this query version whenever `app.js` changes in a future release.
 
 ## Publish and refresh
 
-The hosted site is built from the **root of the `main` branch** of the separate `the-cylinder-solar-expedition` repository. After editing this source, copy the changed site files into that repository, commit and push from GitHub Desktop, wait for GitHub Pages to publish, then refresh the existing Igloo WebView. Change the saved Igloo URL once to include `?projection=1`; later updates need only a refresh. If Igloo still shows older content, use a full reload or clear that WebView's cache. The GitHub repository contains the site source and does **not** contain a numbered `v28` HTML file; the current release number is recorded here and in the local workspace's `Cylinder/HTML/RELEASE.md`. The local `Cylinder/HTML/site/dist` directory is an older prototype, not the GitHub Pages source; do not publish it.
+The hosted site is built from the **root of the `main` branch** of the separate `the-cylinder-solar-expedition` repository. After editing this source, copy the changed site files into that repository, commit and push from GitHub Desktop, wait for GitHub Pages to publish, then refresh the existing Igloo WebView at the plain URL above. If Igloo still shows older content, use a full reload or clear that WebView's cache. The GitHub repository contains the site source and does **not** contain a numbered `v29` HTML file; the current release number is recorded here and in the local workspace's `Cylinder/HTML/RELEASE.md`. The local `Cylinder/HTML/site/dist` directory is an older prototype, not the GitHub Pages source; do not publish it.
 
-For an offline handoff, use `The SolarExpedition_v28.html` from the parent folder. It embeds visuals and narration in one file. On the Igloo computer, append `?projection=1` when opening it as a local file. The ZIP contains the editable source and supporting files. The source site needs its `assets`, `audio`, and `data` folders alongside `index.html`.
+For an offline handoff, use `The SolarExpedition_v29.html` from the parent folder. It embeds visuals and narration in one file. The ZIP contains the editable source and supporting files. The source site needs its `assets`, `audio`, and `data` folders alongside `index.html`.
 
 ## Main files and sources
 

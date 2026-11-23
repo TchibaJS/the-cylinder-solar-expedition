@@ -6,11 +6,11 @@ const language=document.querySelector('#language');
 const voice=document.querySelector('#voice');
 const sound=document.querySelector('#sound');
 const replay=document.querySelector('#replay');
-function shouldUseCylinderLayout(url,width,height){
+function shouldUseCylinderLayout(url,width,height,displayWidth=width,displayHeight=height){
   const params=new URLSearchParams(url.search);
-  return params.get('preview')!=='1'&&(params.get('projection')==='1'||width/height>3);
+  return params.get('preview')!=='1'&&(params.get('projection')==='1'||width/height>3||displayWidth/displayHeight>3);
 }
-const projection=shouldUseCylinderLayout(location,innerWidth,innerHeight);
+const projection=shouldUseCylinderLayout(location,innerWidth,innerHeight,screen.width,screen.height);
 document.body.classList.toggle('preview',!projection);
 document.body.classList.toggle('cylinder',projection);
 function updateProjectionScale(){document.documentElement.style.setProperty('--projection-x',String(projection?Math.min(1,(innerWidth/innerHeight)/(10876/999)):1))}
