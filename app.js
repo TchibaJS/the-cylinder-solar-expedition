@@ -8,8 +8,7 @@ const sound=document.querySelector('#sound');
 const replay=document.querySelector('#replay');
 function shouldUseCylinderLayout(url,width,height){
   const params=new URLSearchParams(url.search);
-  const hosted=url.protocol.startsWith('http')&&url.pathname.toLowerCase().includes('/the-cylinder-solar-expedition/');
-  return params.get('preview')!=='1'&&(params.get('projection')==='1'||width/height>3||hosted);
+  return params.get('preview')!=='1'&&(params.get('projection')==='1'||width/height>3);
 }
 const projection=shouldUseCylinderLayout(location,innerWidth,innerHeight);
 document.body.classList.toggle('preview',!projection);
