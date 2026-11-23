@@ -2,9 +2,9 @@
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{display:flex;align-items:center;justify-content:center}
 button,select{font:inherit}button{cursor:pointer}
 #panorama{position:relative;width:min(100vw,200vh);height:min(50vw,100vh);overflow:hidden;background:#020713}
-.stars{position:absolute;inset:0;background:url('assets/Stars.jpg') center/100% 100% no-repeat;opacity:.77}
+.stars{position:absolute;inset:0;background:url('assets/display/Stars.jpg') center/100% 100% no-repeat;opacity:.77}
 .stars:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#020713b0 96%)}
-body.detail-active .stars{opacity:.96;filter:brightness(1.18)}
+body.detail-active .stars{opacity:1}
 body.detail-active .stars:after{background:radial-gradient(ellipse at center,transparent 24%,#02071375 100%)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 #ambient{position:absolute;z-index:0;inset:0;overflow:hidden;pointer-events:none}
@@ -66,7 +66,7 @@ body.preview .astronaut{width:clamp(68px,10vw,130px)}
 .back{position:absolute;left:59%;top:57.5%;min-width:8vw}
 .moon-field{position:absolute;left:35%;top:20%;width:16%;height:60%;overflow:visible}
 .orbit-track{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid #8bbddd35;border-radius:50%;pointer-events:none}
-.moon-field .moon{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.1vw;background:none;border:0;color:#f3f5fc;font-size:.41vw;max-width:4vw;text-shadow:0 0 .2vw #000;transform:translate(-50%,-50%)}
+.moon-field .moon{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:.1vw;background:none;border:0;color:#f3f5fc;font-size:.41vw;max-width:4vw;text-shadow:0 0 .2vw #000;transform:translate3d(0,0,0);will-change:transform}
 .moon .rock{display:block;width:var(--size);height:var(--size);border-radius:50%;background:radial-gradient(circle at 35% 25%,#dfdfd1,#847a77 62%,#33363c);box-shadow:inset -.15vw -.2vw .3vw #000b}
 .moon .rock.moon-photographed{background-size:cover;background-position:center;background-color:#11151d}
 .moon:hover .rock,.moon:focus-visible .rock{box-shadow:0 0 .4vw #b7e6ff}
@@ -91,12 +91,12 @@ body.preview .stars{background-size:cover}
 body.preview .toolbar{left:2%;top:2%;gap:6px;padding:6px 8px;border-radius:7px}
 body.preview .toolbar label{font-size:11px;gap:5px}
 body.preview .toolbar select,body.preview .toolbar button,body.preview .action{font-size:13px;min-height:30px;padding:4px 8px;border-radius:5px}
-body.preview .overview-heading{left:20%;top:11%;width:60%;font-size:clamp(20px,2.2vw,34px);white-space:nowrap}
+body.preview .overview-heading{left:15%;top:9%;width:70%;font-size:clamp(36px,3.4vw,64px);white-space:nowrap}
 body.preview .overview-sub{left:20%;top:20%;width:60%;font-size:clamp(12px,1.2vw,17px)}
 body.preview .world{gap:5px;min-width:0;width:12.5%;padding:4px}
-body.preview .world-label{font-size:clamp(10px,1vw,14px)}
+body.preview .world-label{font-size:clamp(13px,1.25vw,19px)}
 body.preview .focus-globe{left:28%;top:44%;width:clamp(110px,22vw,300px);height:clamp(110px,22vw,300px)}
-body.preview .planet-panel{left:50%;top:19%;width:46%;height:65%;padding:clamp(10px,1.3vw,20px);border-radius:8px;overflow:auto}
+body.preview .planet-panel{left:55%;top:19%;width:min(28vw,520px);max-width:42vw;height:65%;padding:clamp(10px,1.3vw,20px);border-radius:8px;overflow:auto}
 body.preview .planet-panel h1{font-size:clamp(19px,2.1vw,32px);margin:0 0 8px}
 body.preview .planet-panel p{font-size:clamp(12px,1.25vw,18px);line-height:1.4;margin:7px 0}
 body.preview .planet-panel .facts{font-size:clamp(11px,1.1vw,15px)}
@@ -117,19 +117,19 @@ body.preview .moon-note{left:8%;top:92%;width:38%;font-size:clamp(10px,1vw,14px)
 body.preview #status{right:2%;bottom:2%;font-size:12px}
 /* Igloo's 10876 x 999 WebView is a panoramic canvas, not a 2:1 desktop screen. */
 body.cylinder #panorama{width:100vw;height:100vh}
-body.cylinder .stars{background-size:auto 100%;background-repeat:repeat-x}
+body.cylinder .stars{background-image:url('assets/display/StarsCylinder.jpg');background-size:100% 100%;background-repeat:no-repeat}
 body.cylinder .toolbar{left:1%;top:3%;gap:8px;padding:8px 10px;border-radius:8px}
 body.cylinder .toolbar label{font-size:16px;gap:6px}
 body.cylinder .toolbar select,body.cylinder .toolbar button,body.cylinder .action{font-size:20px;min-height:48px;padding:7px 12px;border-radius:6px}
-body.cylinder .overview-heading{left:40%;top:6%;width:20%;font-size:38px}
+body.cylinder .overview-heading{left:39%;top:4%;width:22%;font-size:72px;white-space:nowrap;transform:scaleX(var(--projection-x));transform-origin:center center}
 body.cylinder .overview-sub{left:38%;top:14%;width:24%;font-size:20px}
 body.cylinder .world{top:53%;min-width:5vw;gap:12px;padding:8px}
-body.cylinder .world-label{font-size:23px}
+body.cylinder .world-label{font-size:30px}
 body.cylinder .astronaut{width:150px}
 body.preview.detail-active .astronaut{width:clamp(65px,7vw,105px);opacity:.68}
 body.cylinder.detail-active .astronaut{width:130px;opacity:.68}
 body.cylinder .focus-globe{left:43%;top:49%;width:52vh;height:52vh;transform:scaleX(var(--projection-x)) translate(-50%,-50%)}
-body.cylinder .planet-panel{left:51%;top:17%;width:900px;height:62vh;padding:22px 28px;border-radius:10px;overflow:auto;transform:scaleX(var(--projection-x));transform-origin:left center}
+body.cylinder .planet-panel{left:51%;top:17%;width:900px;max-width:47vw;height:62vh;padding:22px 28px;border-radius:10px;overflow:auto;transform:scaleX(var(--projection-x));transform-origin:left center}
 body.cylinder .planet-panel h1{font-size:32px;margin:0 0 16px}
 body.cylinder .planet-panel p{font-size:22px;line-height:1.4;margin:12px 0}
 body.cylinder .planet-panel .facts{font-size:19px}
@@ -177,7 +177,7 @@ body.cylinder .planet-panel:before{margin:-22px -28px 22px}
 body.preview .planet-panel h1{font-size:clamp(26px,2.9vw,42px)}
 body.cylinder .planet-panel h1{font-size:44px}
 /* Compact controls with a consistent field-guide finish. */
-.toolbar{background:linear-gradient(140deg,#071827ed,#0b2132e8);border:1px solid #7eaab872;box-shadow:0 10px 30px #0009,0 0 18px #16445d48;backdrop-filter:blur(10px)}
+.toolbar{background:linear-gradient(140deg,#071827f5,#0b2132f2);border:1px solid #7eaab872;box-shadow:0 10px 30px #0009,0 0 18px #16445d48}
 .toolbar label{position:relative}
 .toolbar label:after{content:"";position:absolute;right:1em;top:42%;width:.44em;height:.44em;border-right:2px solid #e7c58a;border-bottom:2px solid #e7c58a;transform:rotate(45deg);pointer-events:none}
 .toolbar select{appearance:none;color-scheme:dark;background:linear-gradient(155deg,#143349,#0b2233);border:1px solid #8bbed077;border-radius:8px;color:#f5f8fa;font-weight:600;letter-spacing:.02em;padding-right:2.6em;box-shadow:inset 0 1px #ffffff18;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .2s}
@@ -190,18 +190,18 @@ body.cylinder .planet-panel h1{font-size:44px}
 .action.back:hover,.action.back:focus-visible{background:#27617b;border-color:#e9c78f;transform:translateY(-2px)}
 body.preview .toolbar select{min-width:118px;padding-right:30px}
 body.cylinder .toolbar select{min-width:190px;padding-right:48px}
-.planet-panel{overflow-x:hidden}
+.planet-panel{overflow-x:hidden;overflow-wrap:anywhere;min-width:0;box-sizing:border-box}
 body.preview .planet-panel:before{margin:-10px 0 14px}
 body.cylinder .planet-panel:before{margin:-22px 0 22px}
 .action.back{min-width:0;width:clamp(130px,8vw,220px);transform:translateX(-50%)}
 .action.back:hover,.action.back:focus-visible{transform:translate(-50%,-2px)}
-body.preview .back{left:73%;width:152px;min-width:0;min-height:40px;padding:7px 12px}
+body.preview .back{left:69%;width:152px;min-width:0;min-height:40px;padding:7px 12px}
 body.cylinder .back{left:51%;width:220px;min-width:0;min-height:48px;transform:scaleX(var(--projection-x));transform-origin:left center}
 body.cylinder .back:hover,body.cylinder .back:focus-visible{transform:scaleX(var(--projection-x)) translateY(-2px)}
 /* Match the overview typography and labels to the field guide. */
 .overview-heading{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:.06em;color:#f8f2e7;text-shadow:0 3px 18px #000,0 0 28px #c9a66d40}
 .overview-sub{font-family:Arial,Helvetica,sans-serif;line-height:1.5;letter-spacing:.025em;color:#bad5e2;text-shadow:0 2px 10px #000}
-.world-label{font-family:Arial,Helvetica,sans-serif;font-weight:700;letter-spacing:.11em;color:#f0e3c9;background:linear-gradient(115deg,#0c2537db,#09202edb);border:1px solid #bda87877;border-radius:99px;padding:.28em .75em;box-shadow:0 4px 16px #0009;text-shadow:0 1px 5px #000}
+.world-label{font-family:Arial,Helvetica,sans-serif;font-weight:700;letter-spacing:.11em;color:#f0e3c9;background:linear-gradient(115deg,#0c2537db,#09202edb);border:1px solid #bda87877;border-radius:99px;padding:.28em .75em;box-shadow:0 4px 16px #0009;text-shadow:0 1px 5px #000;transform:translateY(.65em)}
 .world:hover .world-label,.world:focus-visible .world-label{color:#fff8e7;border-color:#e7c58a;background:#1b4258}
 .toolbar select,.toolbar button{color:#f4ead7}
 #status{color:#bad5e2}
@@ -212,8 +212,8 @@ body.cylinder .back:hover,body.cylinder .back:focus-visible{transform:scaleX(var
 .craft-hotspot:hover,.craft-hotspot:focus-visible{opacity:1;filter:drop-shadow(0 0 1vw #87d9ff)}
 .craft-hotspot:focus-visible{outline:2px solid #e7c58a;outline-offset:4px}
 .astronaut.craft-hotspot{display:block;height:auto}
-.rocket{left:-12%;top:35%;width:clamp(90px,7vw,220px);animation:rocketCruise 115s linear infinite;animation-delay:-20s}
-.space-station{left:73%;top:23%;width:clamp(150px,11vw,340px);opacity:.92;animation:stationFloat 38s ease-in-out infinite alternate}
+.rocket{left:-12%;top:35%;width:clamp(90px,7vw,220px);animation:rocketCruise 260s linear infinite;animation-delay:-55s}
+.space-station{left:73%;top:23%;width:clamp(150px,11vw,340px);opacity:.92;animation:stationFloat 75s ease-in-out infinite alternate}
 body.preview.detail-active .space-station{left:2%;top:8%;width:clamp(120px,13vw,210px);opacity:.82}
 body.cylinder.detail-active .space-station{top:20%;opacity:.82}
 @keyframes rocketCruise{from{transform:translate3d(0,0,0) rotate(-2deg)}to{transform:translate3d(124vw,-6vh,0) rotate(3deg)}}
@@ -237,6 +237,7 @@ body.cylinder .hotspot-pin{width:46px;height:46px;font-size:26px}
 /* Keep the other worlds present without competing with the selected body. */
 .ambient-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;pointer-events:none;opacity:.34;filter:blur(2px) saturate(.6) brightness(.82)}
 .ambient-world{top:53%;transform:translate(-50%,-50%);width:10%}
+.ambient-world .globe:before{animation:none;will-change:auto}
 .ambient-label{font-size:clamp(10px,.95vw,15px);font-weight:600;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap}
 .planet-panel,.action.back,.moon-field{z-index:2}
 .focus-globe{z-index:3}

@@ -6,8 +6,12 @@ const language=document.querySelector('#language');
 const voice=document.querySelector('#voice');
 const sound=document.querySelector('#sound');
 const replay=document.querySelector('#replay');
-const wideCylinder=innerWidth/innerHeight>3;
-const projection=new URLSearchParams(location.search).get('projection')==='1'||wideCylinder;
+function shouldUseCylinderLayout(url,width,height){
+  const params=new URLSearchParams(url.search);
+  const hosted=url.protocol.startsWith('http')&&url.pathname.toLowerCase().includes('/the-cylinder-solar-expedition/');
+  return params.get('preview')!=='1'&&(params.get('projection')==='1'||width/height>3||hosted);
+}
+const projection=shouldUseCylinderLayout(location,innerWidth,innerHeight);
 document.body.classList.toggle('preview',!projection);
 document.body.classList.toggle('cylinder',projection);
 function updateProjectionScale(){document.documentElement.style.setProperty('--projection-x',String(projection?Math.min(1,(innerWidth/innerHeight)/(10876/999)):1))}
@@ -34,7 +38,7 @@ function sourceLink(label,url){const a=el('a','source-link');a.href=url;a.target
 function t(key){return labels[language.value][key]}
 function nameOf(p){return language.value==='fr'?p.frenchName:p.name}
 function el(tag,cls,text){const node=document.createElement(tag);if(cls)node.className=cls;if(text!=null)node.textContent=text;return node}
-function globe(p,size){const node=el('span','globe');node.style.setProperty('--texture',`url("assets/${p.name}.jpg")`);node.style.setProperty('--diameter',size);node.style.setProperty('--glow',colors[catalog.indexOf(p)]+'77');if(p.name!=='Saturn'&&p.name!=='Uranus')return node;const system=el('span','ring-system '+p.name.toLowerCase());system.style.setProperty('--diameter',size);system.append(el('span','ring-art ring-back'),node,el('span','ring-art ring-front'));return system}
+function globe(p,size){const node=el('span','globe');node.style.setProperty('--texture',`url("assets/display/${p.name}.jpg")`);node.style.setProperty('--diameter',size);node.style.setProperty('--glow',colors[catalog.indexOf(p)]+'77');if(p.name!=='Saturn'&&p.name!=='Uranus')return node;const system=el('span','ring-system '+p.name.toLowerCase());system.style.setProperty('--diameter',size);system.append(el('span','ring-art ring-back'),node,el('span','ring-art ring-front'));return system}
 function moonAsset(m){return typeof assetUrl==='function'?assetUrl(m.image.slice(7)):m.image}
 function moonVisual(m){const wrap=el('div','moon-closeup'+(m.image?' has-image':''));if(m.mappedSurface){const globe=el('span','globe moon-mapped-globe');globe.style.setProperty('--diameter','100%');globe.style.setProperty('--texture',`url("${moonAsset(m)}")`);globe.style.setProperty('--glow','#b4c9dd77');wrap.append(globe)}else if(m.image){const img=el('img','moon-portrait');img.src=moonAsset(m);img.alt=(language.value==='fr'?'Image NASA de ':'NASA image of ')+m.name;img.style.maxWidth=`${m.imageWidth}px`;img.style.maxHeight=`${m.imageHeight}px`;wrap.append(img)}else{wrap.append(el('div','moon-neutral'));wrap.setAttribute('aria-label',language.value==='fr'?'Modèle neutre sans image vérifiée':'Neutral model; no verified image')}return wrap}
 let audioQueue=[];
@@ -173,19 +177,19 @@ function animate(time){
     const detail=selected>=0||craftTopic!==null;
     if(!astronautLayout||astronautLayout.detail!==detail||astronautLayout.width!==ambient.clientWidth||astronautLayout.height!==ambient.clientHeight){astronautLayout={detail,width:ambient.clientWidth,height:ambient.clientHeight,bodyWidth:astronaut.offsetWidth,bodyHeight:astronaut.offsetHeight}}
     const {width,height,bodyWidth,bodyHeight}=astronautLayout;
-    const targetX=(detail ? .03+.1*(.5+.5*Math.sin(seconds*.018)) : .5+.46*Math.sin(seconds*.018))*(width-bodyWidth);
-    const targetY=(detail ? .72+.07*Math.sin(seconds*.025+1.1) : .5+.43*Math.sin(seconds*.025+1.1))*(height-bodyHeight);
+    const targetX=(detail ? .03+.1*(.5+.5*Math.sin(seconds*.008)) : .5+.46*Math.sin(seconds*.008))*(width-bodyWidth);
+    const targetY=(detail ? .72+.07*Math.sin(seconds*.011+1.1) : .5+.43*Math.sin(seconds*.011+1.1))*(height-bodyHeight);
     const delta=Math.min(Math.max((time-lastFrameTime)/1000,0),.1),blend=1-Math.exp(-1.8*delta);
     astronautX=astronautX===null?targetX:astronautX+(targetX-astronautX)*blend;
     astronautY=astronautY===null?targetY:astronautY+(targetY-astronautY)*blend;
-    astronaut.style.transform=`translate3d(${astronautX}px,${astronautY}px,0) rotate(${5*Math.sin(seconds*.022)}deg)`;
+    astronaut.style.transform=`translate3d(${astronautX}px,${astronautY}px,0) rotate(${4*Math.sin(seconds*.01)}deg)`;
   }
   lastFrameTime=time;
   const field=document.querySelector('.moon-field'),focus=document.querySelector('.focus-globe');
   if(field&&focus){
     if(!orbitGeometry||orbitGeometry.field!==field){const area=field.getBoundingClientRect(),body=focus.getBoundingClientRect(),xScale=projection?Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--projection-x'))||1:1;orbitGeometry={field,cx:body.left+body.width/2-area.left,cy:body.top+body.height/2-area.top,base:body.height/2+Math.max(30,body.height*.13),gap:Math.max(18,body.height*.07),xScale};for(const track of field.querySelectorAll('.orbit-track')){const i=Number(track.dataset.orbit),radius=orbitGeometry.base+i*orbitGeometry.gap;track.style.left=orbitGeometry.cx+'px';track.style.top=orbitGeometry.cy+'px';track.style.width=2*radius*xScale+'px';track.style.height=2*radius+'px'}}
     const {cx,cy,base,gap,xScale}=orbitGeometry;
-    for(const moon of field.querySelectorAll('.moon')){const i=Number(moon.dataset.orbit),radius=base+i*gap,angle=seconds*(.24/(1+i*.3))+i*Math.PI/2;moon.style.left=(cx+Math.cos(angle)*radius*xScale)+'px';moon.style.top=(cy+Math.sin(angle)*radius)+'px'}
+    for(const moon of field.querySelectorAll('.moon')){const i=Number(moon.dataset.orbit),radius=base+i*gap,angle=seconds*(.24/(1+i*.3))+i*Math.PI/2,x=cx+Math.cos(angle)*radius*xScale,y=cy+Math.sin(angle)*radius;moon.style.transform=`translate3d(${x}px,${y}px,0) scaleX(${xScale}) translate(-50%,-50%)`}
   }
   requestAnimationFrame(animate)
 }requestAnimationFrame(animate);
