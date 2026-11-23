@@ -1,54 +1,40 @@
-# The Solar Expedition — HTML version
+# The Solar Expedition — cylinder web atlas
 
-## Hosted cylinder version
+**Current project release: v27 (23 November 2026).** This folder holds the editable web source. In the local project workspace, the numbered offline release files, `The SolarExpedition_v27.html` and `The SolarExpedition_v27.zip`, are in `Cylinder/HTML`; they are not part of the GitHub Pages repository. The hosted copy lives in the separate `the-cylinder-solar-expedition` repository. The Hologram Box Capsule Edition is a separate project.
 
-This folder is the separate GitHub Pages project for the Igloo cylinder. Its public address is `https://tchibajs.github.io/the-cylinder-solar-expedition/`. The Capsule Edition is a different repository and is not changed by edits here.
+## What visitors can do
 
-In Igloo, set the WebView URL once to `https://tchibajs.github.io/the-cylinder-solar-expedition/`. The hosted page selects the cylinder layout automatically, even when Igloo reports a normal desktop browser viewport. Add `?preview=1` when viewing the hosted page on a laptop. After changing this project, commit and push it from GitHub Desktop. Wait for GitHub Pages to finish publishing, then refresh that WebView. If it keeps an older cached copy, use its full reload or clear that layer's browser cache.
+- Explore eight planets spaced around a flat 360° cylinder panorama. Select a planet to see its close-up, English or French description, NASA-linked measurements, and information panel. The Overview button returns to all eight planets.
+- See up to four orbiting moons at once and choose any other catalogue moon from the searchable library. Selecting one opens a moon close-up and information panel; the Planet button returns to its parent planet. The runtime catalogue has **456 moons**: Earth 1, Mars 2, Jupiter 115, Saturn 293, Uranus 29, and Neptune 16. Mercury and Venus have none.
+- Open “What am I seeing?” on planet and moon close-ups. Planet pages also have a Scale moment comparing equatorial diameter with Earth. Image status and NASA source links appear in the panel.
+- Select the astronaut, spacecraft, or space station to open a bilingual learning guide. Each guide starts with its title and introduction; selecting a topic opens that topic's text, NASA images where available, and source links. The three decorative figures are artistic illustrations, not models of a particular mission or person.
+- Choose English narration (Anna or Charles) or French narration (Estelle), turn narration on or off, and replay the current selection. The 1,467 MP3 recordings cover the overview, planets, catalogue moons, learning moments, and guide topics. Ambient music is enabled by default and ducks during speech. Browsers may delay sound until the first visitor interaction.
 
-The current trial keeps the other seven planets visible as subdued background landmarks during a planet or moon close-up. The Planet button returns from a moon to its parent planet.
-During a close-up, the stars and nebula stay visible. The other planets remain at their overview positions as softly blurred, subdued background landmarks. The information panel stays within a narrow reading sector of the cylinder.
-The panorama also includes the supplied spacecraft image, a space station, and an astronaut. They remain in the background during close-ups and move smoothly.
-The spacecraft, station, and astronaut now have clickable `+` markers. Each opens a short bilingual guide with selectable topics, NASA source links, and the selected narrator. These images are artistic illustrations, not depictions of a specific real mission or crew member. Close a guide with Return or Esc to resume the previous planet or moon view.
-In a close-up, tap the question-mark hotspot on a world to learn what its visible features or image represent. Planet views also offer a Scale moment that compares the planet's equatorial diameter with Earth's using NASA measurements. Both learning features are optional and link to their sources.
+The planet textures rotate and the first four moon markers move on illustrative orbit tracks. Saturn and Uranus have rings. The astronaut, spacecraft, and station move in the background; during close-ups, the other planets stay in their overview positions as subdued, slightly blurred landmarks. Planet and moon sizes, distances, and orbital speeds are illustrative, not a scale simulation.
 
-This is a separate, offline web version of the Unity experience. In the venue's wide WebView it renders a flat panoramic strip for the cylinder. It does not need Unity, the Igloo Unity Toolkit, Spout, or a Windows build. See [Cylinder starter guide](../CYLINDER_STARTER_GUIDE.md) for the current installation findings and setup steps.
+## Current cylinder presentation
 
-## Included
+The hosted page uses the cylinder layout automatically at `https://tchibajs.github.io/the-cylinder-solar-expedition/`. Add `?preview=1` to that URL for a desktop preview. A local `index.html` opens in desktop mode unless its viewport is very wide; add `?projection=1` to force the cylinder layout. The numbered standalone HTML uses the same local-file rule.
 
-- Eight selectable planets arranged around the 360° panorama.
-- Planet images, 461 entries from the existing moon catalogue, English and French descriptions.
-- Anna and Charles English narration and Estelle French narration for every catalogue moon, planet, learning moment, spacecraft guide topic, and the overview. The ↻ button replays the current view; browsers require a visitor click before audio can play.
-- A visible Back button, moon page controls, and Esc/arrow keyboard shortcuts.
-- Animated planet positions and textures, orbiting moon markers, Saturn and Uranus rings, a floating astronaut, and a denser star field.
-- The original Hologram box ambient music starts automatically when the browser permits audio. If autoplay is blocked, the first visitor interaction starts it. The ♪ button turns it off or on.
+The Igloo WebView has been tested as a flat panorama at about **10876 × 999 pixels**. Its controls can be operated with the Igloo tablet's Cast Mouse. This web version does not need Unity, the Igloo Unity Toolkit, Spout, or a Windows executable. Keep the WebView as a flat panoramic strip unless a different mapping is deliberately tested in the room.
 
-The planet and moon sizes, separations, and movements are illustrative. The overview is not to scale. This first version uses textured 2D globes in a panoramic web page; it does not yet reproduce Unity's 3D lighting or moon orbits.
+**v26 performance work:** moon markers now use transforms during animation, dimmed background globes stop spinning, and the page uses smaller display copies of the original planet and star images. The original image files remain in `assets/`.
 
-## Try it on your computer
+**v27 colour work:** the cylinder uses a single 10876 × 999 star background with a consistent dark base instead of repeating the original two-to-one sky image. This addresses alternating dark-blue/light-blue bands seen with this project in the venue. Check the result on the actual cylinder; Igloo's projector and browser settings can still affect the final image.
 
-Open `index.html` in a browser. Keep the `assets`, `audio`, and `data` folders alongside it. The content and narration are local; no internet is needed. The default page is a larger desktop view for editing and testing. Add `?projection=1` to the URL for the 2:1 cylinder view.
+## Publish and refresh
 
-## Try it on the Igloo computer
+The hosted site is built from the **root of the `main` branch** of the separate `the-cylinder-solar-expedition` repository. After editing this source, copy the changed site files into that repository, commit and push from GitHub Desktop, wait for GitHub Pages to publish, then refresh the existing Igloo WebView. If Igloo still shows older content, use a full reload or clear that WebView's cache. The GitHub repository contains the site source and does **not** contain a numbered `v27` HTML file; the current release number is recorded here and in the local workspace's `Cylinder/HTML/RELEASE.md`.
 
-1. Copy the whole `HTML` folder to the central computer. Do not copy only `index.html`.
-2. In Igloo, add a **WebView** layer. Enter a local `file:///` URL to its `index.html` with `?projection=1`, for example `file:///C:/SolarSystem360/HTML/index.html?projection=1`. If that Igloo installation refuses local file URLs, serve the folder on the central computer over local HTTP and use its `http://127.0.0.1:<port>/?projection=1` URL. Keep the server running while the session is active.
-3. Set the WebView's rendering resolution to the working wide-strip setting, **10876 × 999/1000**, and make the layer fill the intended canvas region. Test Dynamic Browser Resolution on the installed system; a fixed strip size may work better with it off.
-4. Keep the page on the flat panoramic-strip route used in the venue tests. Do not add True Perspective or cubemap conversion without deliberately changing the content format and verifying it in the room.
-5. Turn on **Canvas UI**, select the WebView layer, then use **Cast Mouse** on the Igloo tablet to move and click the page. Test selecting a planet, changing language and voice, paging moons, and Back. The tablet's Game Controller casting is a different path and is not needed for this web version.
-6. Save the working Igloo layer as a session or layer preset.
+For an offline handoff, use `The SolarExpedition_v27.html` from the parent folder. It embeds visuals and narration in one file. On the Igloo computer, append `?projection=1` when opening it as a local file. The ZIP contains the editable source and supporting files. The source site needs its `assets`, `audio`, and `data` folders alongside `index.html`.
 
-The exact crop, scale, mouse mapping, and audio routing must be checked on the real cylinder. This local computer cannot verify those parts. The page keeps important content near the horizon to reduce vertical cropping; adjust the Igloo True Perspective settings after seeing it on site.
+## Main files and sources
 
-## Files
+- `index.html`, `styles.css`, `app.js`, `music.js`: page, layout, interaction, and generated ambient sound.
+- `data/catalogue.js`: **runtime** NASA-backed planet and moon catalogue. The older `data/catalogue.json` is not currently synchronized with it; do not use the JSON alone to count or edit the live moons.
+- `data/craft_guides.js`, `data/craft_visuals.js`, `assets/craft/`: guide text, visual records, and images.
+- `assets/display/`: optimized planet textures plus `StarsCylinder.jpg` for the wide canvas. Original images remain in `assets/`.
+- `assets/moons/photos/`: 35 NASA-linked moon images in the runtime catalogue, including the mapped Earth Moon. Some source photographs have low native resolution; moons without a verified image use a neutral model.
+- `audio/narration/`: 1,467 narration clips. The hosted page requests clips as needed; the standalone HTML embeds them all.
 
-- `index.html`, `styles.css`, `app.js`: the web experience.
-- `data/catalogue.js`: planet and moon data loaded without a network request, so local file access can work.
-- `data/craft_guides.js`: sourced English and French learning topics for the station, spacecraft, and astronaut.
-- `data/craft_visuals.js` and `assets/craft/`: NASA photographs, bilingual captions, and image source links for those topics.
-- `data/catalogue.json`: an editable copy of the same catalogue. If it changes, regenerate `catalogue.js` before running the page.
-- `assets/`: copied planet and background images from the existing Unity project.
-- `audio/narration/`: compressed recordings for the full catalogue and learning moments. Older Unity planet recordings also remain in `audio/` as archive files.
-
-Source material was reused from `Cylinder/Unity_Spout/SolarSystem360_SpoutTest/Assets/Resources/SolarSystem`. Keep the original asset provenance and permissions with the project when distributing it.
-
+Planet measurements and summaries, moon catalogue records, image provenance, and their limits are described in the parent `NASA_SOURCES.md`. The narration generation workflow is in `NARRATION.md`. French text is a translation of the sourced English material. External NASA links require an internet connection; the core exhibit and local audio do not.
