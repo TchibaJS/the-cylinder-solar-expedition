@@ -24,14 +24,14 @@ The Igloo WebView has been tested as a flat panorama at about **10876 × 999 pix
 
 ## Publish and refresh
 
-The hosted site is built from the **root of the `main` branch** of the separate `the-cylinder-solar-expedition` repository. After editing this source, copy the changed site files into that repository, commit and push from GitHub Desktop, wait for GitHub Pages to publish, then refresh the existing Igloo WebView. If Igloo still shows older content, use a full reload or clear that WebView's cache. The GitHub repository contains the site source and does **not** contain a numbered `v27` HTML file; the current release number is recorded here and in the local workspace's `Cylinder/HTML/RELEASE.md`.
+The hosted site is built from the **root of the `main` branch** of the separate `the-cylinder-solar-expedition` repository. After editing this source, copy the changed site files into that repository, commit and push from GitHub Desktop, wait for GitHub Pages to publish, then refresh the existing Igloo WebView. If Igloo still shows older content, use a full reload or clear that WebView's cache. The GitHub repository contains the site source and does **not** contain a numbered `v27` HTML file; the current release number is recorded here and in the local workspace's `Cylinder/HTML/RELEASE.md`. The local `Cylinder/HTML/site/dist` directory is an older prototype, not the GitHub Pages source; do not publish it.
 
 For an offline handoff, use `The SolarExpedition_v27.html` from the parent folder. It embeds visuals and narration in one file. On the Igloo computer, append `?projection=1` when opening it as a local file. The ZIP contains the editable source and supporting files. The source site needs its `assets`, `audio`, and `data` folders alongside `index.html`.
 
 ## Main files and sources
 
 - `index.html`, `styles.css`, `app.js`, `music.js`: page, layout, interaction, and generated ambient sound.
-- `data/catalogue.js`: **runtime** NASA-backed planet and moon catalogue. The older `data/catalogue.json` is not currently synchronized with it; do not use the JSON alone to count or edit the live moons.
+- `data/catalogue.js`: **runtime** NASA-backed planet and moon catalogue. `data/catalogue.json` is now synchronized as an editable copy. After changing the runtime catalogue, run `sync_catalogue_json.py` from the parent `HTML` folder to refresh both JSON copies.
 - `data/craft_guides.js`, `data/craft_visuals.js`, `assets/craft/`: guide text, visual records, and images.
 - `assets/display/`: optimized planet textures plus `StarsCylinder.jpg` for the wide canvas. Original images remain in `assets/`.
 - `assets/moons/photos/`: 35 NASA-linked moon images in the runtime catalogue, including the mapped Earth Moon. Some source photographs have low native resolution; moons without a verified image use a neutral model.
