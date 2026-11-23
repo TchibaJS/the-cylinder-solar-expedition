@@ -7,8 +7,9 @@ This folder is the separate GitHub Pages project for the Igloo cylinder. Its pub
 In Igloo, set the WebView URL once to `https://tchibajs.github.io/the-cylinder-solar-expedition/?projection=1`. The query selects the cylinder layout even when Igloo reports a normal desktop browser viewport. After changing this project, commit and push it from GitHub Desktop. Wait for GitHub Pages to finish publishing, then refresh that WebView. If it keeps an older cached copy, use its full reload or clear that layer's browser cache.
 
 The current trial keeps the other seven planets visible as subdued background landmarks during a planet or moon close-up. The Planet button returns from a moon to its parent planet.
-During a close-up, the other planets remain at their overview positions as dim, softly blurred background landmarks. The information panel stays within a narrow reading sector of the cylinder.
-The panorama also includes the supplied spacecraft image, a space station, and an astronaut. They remain in the background during close-ups, move smoothly, and do not intercept clicks.
+During a close-up, the stars and nebula stay visible. The other planets remain at their overview positions as softly blurred, subdued background landmarks. The information panel stays within a narrow reading sector of the cylinder.
+The panorama also includes the supplied spacecraft image, a space station, and an astronaut. They remain in the background during close-ups and move smoothly.
+The spacecraft, station, and astronaut now have clickable `+` markers. Each opens a short bilingual guide with selectable topics, NASA source links, and the selected narrator. These images are artistic illustrations, not depictions of a specific real mission or crew member. Close a guide with Return or Esc to resume the previous planet or moon view.
 In a close-up, tap the question-mark hotspot on a world to learn what its visible features or image represent. Planet views also offer a Scale moment that compares the planet's equatorial diameter with Earth's using NASA measurements. Both learning features are optional and link to their sources.
 
 This is a separate, offline web version of the Unity experience. In the venue's wide WebView it renders a flat panoramic strip for the cylinder. It does not need Unity, the Igloo Unity Toolkit, Spout, or a Windows build. See [Cylinder starter guide](../CYLINDER_STARTER_GUIDE.md) for the current installation findings and setup steps.
@@ -17,10 +18,10 @@ This is a separate, offline web version of the Unity experience. In the venue's 
 
 - Eight selectable planets arranged around the 360° panorama.
 - Planet images, 461 entries from the existing moon catalogue, English and French descriptions.
-- Anna and Charles English narration and Estelle French narration for every catalogue moon, planet, learning moment, and the overview. The ↻ button replays the current view; browsers require a visitor click before audio can play.
+- Anna and Charles English narration and Estelle French narration for every catalogue moon, planet, learning moment, spacecraft guide topic, and the overview. The ↻ button replays the current view; browsers require a visitor click before audio can play.
 - A visible Back button, moon page controls, and Esc/arrow keyboard shortcuts.
 - Animated planet positions and textures, orbiting moon markers, Saturn and Uranus rings, a floating astronaut, and a denser star field.
-- The original Hologram box ambient music, started with the ♪ button. Browsers require a visitor click before music can play.
+- The original Hologram box ambient music starts automatically when the browser permits audio. If autoplay is blocked, the first visitor interaction starts it. The ♪ button turns it off or on.
 
 The planet and moon sizes, separations, and movements are illustrative. The overview is not to scale. This first version uses textured 2D globes in a panoramic web page; it does not yet reproduce Unity's 3D lighting or moon orbits.
 
@@ -43,6 +44,8 @@ The exact crop, scale, mouse mapping, and audio routing must be checked on the r
 
 - `index.html`, `styles.css`, `app.js`: the web experience.
 - `data/catalogue.js`: planet and moon data loaded without a network request, so local file access can work.
+- `data/craft_guides.js`: sourced English and French learning topics for the station, spacecraft, and astronaut.
+- `data/craft_visuals.js` and `assets/craft/`: NASA photographs, bilingual captions, and image source links for those topics.
 - `data/catalogue.json`: an editable copy of the same catalogue. If it changes, regenerate `catalogue.js` before running the page.
 - `assets/`: copied planet and background images from the existing Unity project.
 - `audio/narration/`: compressed recordings for the full catalogue and learning moments. Older Unity planet recordings also remain in `audio/` as archive files.

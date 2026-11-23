@@ -16,7 +16,7 @@ window.atlasLanguage=()=>language.value;
 window.narratorAudio=audio;
 const colors=['#bbb6ad','#eed2a3','#5fb7ff','#cf7756','#d8b899','#e0d0aa','#a2eef0','#6485ee'];
 const sizes=[3.5,5.1,5.4,4.2,7.1,6.4,5.7,5.5];
-let catalog=[];let selected=-1;let chosenMoon=null;let narrationOn=true;let learningAudio=null;
+let catalog=[];let selected=-1;let chosenMoon=null;let narrationOn=true;let learningAudio=null;let craftTopic=null;let craftSection=null;
 const discoveries={
   Mercury:{en:['A cratered world','Mercury’s rocky surface preserves many impact craters.'],fr:['Un monde cratérisé','La surface rocheuse de Mercure conserve de nombreux cratères d’impact.']},
   Venus:{en:['A hidden surface','Thick clouds conceal Venus’s surface, while its dense atmosphere traps heat.'],fr:['Une surface cachée','Des nuages épais cachent la surface de Vénus, et son atmosphère dense piège la chaleur.']},
@@ -47,20 +47,17 @@ function playAudio(){stopAudio();if(!narrationOn)return;const who=voice.value;if
 function updateControls(){const fr=language.value==='fr',previous=voice.value;voice.replaceChildren();for(const item of fr?['estelle']:['anna','charles']){const option=el('option','',item[0].toUpperCase()+item.slice(1));option.value=item;voice.append(option)}if([...voice.options].some(option=>option.value===previous))voice.value=previous;document.querySelector('#languageLabel').textContent=t('language');document.querySelector('#voiceLabel').textContent=t('voice');document.querySelector('#soundLabel').textContent=t(narrationOn?'on':'off');sound.setAttribute('aria-pressed',String(narrationOn));replay.setAttribute('aria-label',fr?'Réécouter la narration':'Replay narration');replay.title=replay.getAttribute('aria-label');document.documentElement.lang=language.value}
 function overview(){const title=el('h1','overview-heading',t('heading'));scene.append(title,el('p','overview-sub',t('sub')));catalog.forEach((p,i)=>{const btn=el('button','world');btn.type='button';btn.style.left=(6.25+i*12.5)+'%';btn.setAttribute('aria-label',nameOf(p));const size=`min(${(sizes[i]*.75).toFixed(2)}vw,${(sizes[i]*5.5).toFixed(2)}vh)`;btn.append(globe(p,size),el('span','world-label',nameOf(p)));btn.onclick=()=>select(i);scene.append(btn)})}
 function addAmbientCraft(){
-  const rocket=el('img','spacecraft rocket');
-  rocket.src='assets/rocket-cutout.png';
-  rocket.alt='';
-  rocket.setAttribute('aria-hidden','true');
-  const station=el('img','spacecraft space-station');
-  station.src='assets/station-cutout.png';
-  station.alt='';
-  station.setAttribute('aria-hidden','true');
-  const astronaut=el('img','astronaut');
-  astronaut.src='assets/astronaut-float.webp';
-  astronaut.alt='Floating astronaut';
-  ambient.append(rocket,station,astronaut);
+  for(const [id,cls,source] of [['rocket','spacecraft rocket','assets/rocket-cutout.png'],['station','spacecraft space-station','assets/station-cutout.png'],['astronaut','astronaut','assets/astronaut-float.webp']]){
+    const button=el('button',cls+' craft-hotspot');button.type='button';button.dataset.craft=id;
+    const image=el('img','craft-image');image.src=source;image.alt='';image.draggable=false;
+    button.append(image);button.onclick=()=>openCraft(id);ambient.append(button)
+  }
+  updateCraftLabels();
 }
-function select(i){selected=i;chosenMoon=null;learningAudio=null;status.textContent='';render();playAudio()}
+function updateCraftLabels(){for(const button of ambient.querySelectorAll('.craft-hotspot')){const guide=window.CRAFT_GUIDES?.[button.dataset.craft]?.[language.value];if(guide){button.setAttribute('aria-label',`${language.value==='fr'?'Explorer':'Explore'} : ${guide.title}`);button.title=button.getAttribute('aria-label')}}}
+function openCraft(id){craftTopic=id;craftSection=null;learningAudio=`craft-intro-${id}`;status.textContent='';render();playAudio()}
+function closeCraft(){craftTopic=null;craftSection=null;learningAudio=null;render();playAudio()}
+function select(i){craftTopic=null;selected=i;chosenMoon=null;learningAudio=null;status.textContent='';render();playAudio()}
 function hotspotFact(p,m){
   if(!m){const fact=discoveries[p.name][language.value];return {title:fact[0],text:fact[1],url:p.source,audioKey:`planet-${p.name}`}}
   const fr=language.value==='fr';
@@ -100,6 +97,23 @@ function surroundingWorlds(){
     landmark.append(globe(p,size),el('span','ambient-label',nameOf(p)));
     scene.append(landmark);
   }
+}
+function craftDetail(){
+  const guide=window.CRAFT_GUIDES?.[craftTopic]?.[language.value];if(!guide)return;
+  surroundingWorlds();
+  const original=ambient.querySelector(`.craft-hotspot[data-craft="${craftTopic}"] .craft-image`);
+  if(original){const artwork=el('div','craft-focus');const picture=el('img','craft-focus-image');picture.src=original.src;picture.alt='';artwork.append(picture);scene.append(artwork)}
+  const panel=el('article','planet-panel craft-panel');
+  panel.append(el('div','eyebrow',guide.eyebrow),el('h1','',guide.title),el('p','planet-summary',guide.intro));
+  const tabs=el('nav','craft-tabs');tabs.setAttribute('aria-label',language.value==='fr'?'Sujets':'Topics');
+  guide.sections.forEach((item,index)=>{const button=el('button','craft-tab'+(index===craftSection?' selected':''),item.title);button.type='button';button.setAttribute('aria-pressed',String(index===craftSection));button.onclick=()=>{craftSection=index;learningAudio=`craft-${craftTopic}-${index}`;render();playAudio()};tabs.append(button)});
+  panel.append(tabs);
+  if(craftSection!==null){const item=guide.sections[craftSection];panel.append(el('h2','craft-section-title',item.title),el('p','craft-section-text',item.text));
+  const visuals=window.CRAFT_VISUALS?.[craftTopic]?.[craftSection]||[];
+  if(visuals.length){const gallery=el('div','craft-gallery');for(const visual of visuals){const figure=el('figure','craft-figure');const picture=el('img','craft-photo');picture.src=visual.file;picture.alt=visual[language.value];picture.loading='lazy';const caption=el('figcaption','craft-caption');const credit=el('a','', 'NASA ↗');credit.href=visual.source;credit.target='_blank';credit.rel='noopener noreferrer';credit.setAttribute('aria-label',`${language.value==='fr'?'Source de l’image':'Image source'}: ${visual[language.value]}`);caption.append(el('span','',visual[language.value]),credit);figure.append(picture,caption);gallery.append(figure)}panel.append(gallery)}
+  const sources=el('div','craft-sources');for(const [label,url] of item.sources)sources.append(sourceLink(label,url));panel.append(sources)}
+  scene.append(panel);
+  const back=el('button','action back',language.value==='fr'?'Retour':'Return');back.type='button';back.onclick=closeCraft;scene.append(back)
 }
 function detail(){
   const p=catalog[selected];
@@ -149,20 +163,22 @@ function drawMoons(p,panel){
   library.append(list);panel.append(library);
 }
 let orbitGeometry=null;
-function render(){orbitGeometry=null;scene.replaceChildren();document.body.classList.toggle('detail-active',selected>=0);if(!ambient.childElementCount)addAmbientCraft();updateControls();if(selected<0)overview();else detail()}
+function render(){orbitGeometry=null;scene.replaceChildren();document.body.classList.toggle('detail-active',selected>=0||craftTopic!==null);if(!ambient.childElementCount)addAmbientCraft();updateControls();updateCraftLabels();if(craftTopic)craftDetail();else if(selected<0)overview();else detail()}
 window.addEventListener('resize',()=>{orbitGeometry=null;updateProjectionScale()});
-language.onchange=()=>{learningAudio=null;render();playAudio()};voice.onchange=playAudio;sound.onclick=()=>{narrationOn=!narrationOn;updateControls();if(narrationOn)playAudio();else stopAudio()};replay.onclick=()=>{if(!narrationOn){narrationOn=true;updateControls()}playAudio()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&selected>=0){learningAudio=null;selected=-1;stopAudio();render()}else if(e.key==='ArrowRight'&&selected>=0){select((selected+1)%catalog.length)}else if(e.key==='ArrowLeft'&&selected>=0){select((selected+catalog.length-1)%catalog.length)}});
-let astronautX=null,astronautY=null,lastFrameTime=0;
+language.onchange=()=>{learningAudio=craftTopic?(craftSection===null?`craft-intro-${craftTopic}`:`craft-${craftTopic}-${craftSection}`):null;render();playAudio()};voice.onchange=playAudio;sound.onclick=()=>{narrationOn=!narrationOn;updateControls();if(narrationOn)playAudio();else stopAudio()};replay.onclick=()=>{if(!narrationOn){narrationOn=true;updateControls()}playAudio()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&craftTopic){closeCraft()}else if(e.key==='Escape'&&selected>=0){learningAudio=null;selected=-1;stopAudio();render()}else if(e.key==='ArrowRight'&&selected>=0&&!craftTopic){select((selected+1)%catalog.length)}else if(e.key==='ArrowLeft'&&selected>=0&&!craftTopic){select((selected+catalog.length-1)%catalog.length)}});
+let astronautX=null,astronautY=null,lastFrameTime=0,astronautLayout=null;
 function animate(time){
   const seconds=time/1000,astronaut=ambient.querySelector('.astronaut');
   if(astronaut){
-    const bounds=ambient.getBoundingClientRect(),w=astronaut.offsetWidth,h=astronaut.offsetHeight,detail=selected>=0;
-    const targetX=(detail ? .03+.1*(.5+.5*Math.sin(seconds*.037)) : .5+.46*Math.sin(seconds*.037))*(bounds.width-w);
-    const targetY=(detail ? .72+.07*Math.sin(seconds*.061+1.1) : .5+.43*Math.sin(seconds*.061+1.1))*(bounds.height-h);
-    const delta=Math.min(Math.max((time-lastFrameTime)/1000,0),.1),blend=1-Math.exp(-2.8*delta);
+    const detail=selected>=0||craftTopic!==null;
+    if(!astronautLayout||astronautLayout.detail!==detail||astronautLayout.width!==ambient.clientWidth||astronautLayout.height!==ambient.clientHeight){astronautLayout={detail,width:ambient.clientWidth,height:ambient.clientHeight,bodyWidth:astronaut.offsetWidth,bodyHeight:astronaut.offsetHeight}}
+    const {width,height,bodyWidth,bodyHeight}=astronautLayout;
+    const targetX=(detail ? .03+.1*(.5+.5*Math.sin(seconds*.018)) : .5+.46*Math.sin(seconds*.018))*(width-bodyWidth);
+    const targetY=(detail ? .72+.07*Math.sin(seconds*.025+1.1) : .5+.43*Math.sin(seconds*.025+1.1))*(height-bodyHeight);
+    const delta=Math.min(Math.max((time-lastFrameTime)/1000,0),.1),blend=1-Math.exp(-1.8*delta);
     astronautX=astronautX===null?targetX:astronautX+(targetX-astronautX)*blend;
     astronautY=astronautY===null?targetY:astronautY+(targetY-astronautY)*blend;
-    astronaut.style.transform=`translate3d(${astronautX}px,${astronautY}px,0) rotate(${7*Math.sin(seconds*.047)}deg)`;
+    astronaut.style.transform=`translate3d(${astronautX}px,${astronautY}px,0) rotate(${5*Math.sin(seconds*.022)}deg)`;
   }
   lastFrameTime=time;
   const field=document.querySelector('.moon-field'),focus=document.querySelector('.focus-globe');

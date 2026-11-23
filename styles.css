@@ -4,9 +4,12 @@ button,select{font:inherit}button{cursor:pointer}
 #panorama{position:relative;width:min(100vw,200vh);height:min(50vw,100vh);overflow:hidden;background:#020713}
 .stars{position:absolute;inset:0;background:url('assets/Stars.jpg') center/100% 100% no-repeat;opacity:.77}
 .stars:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#020713b0 96%)}
+body.detail-active .stars{opacity:.96;filter:brightness(1.18)}
+body.detail-active .stars:after{background:radial-gradient(ellipse at center,transparent 24%,#02071375 100%)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 #ambient{position:absolute;z-index:0;inset:0;overflow:hidden;pointer-events:none}
-#scene{position:absolute;z-index:1;inset:0}
+#scene{position:absolute;z-index:1;inset:0;pointer-events:none}
+#scene button,#scene a,#scene input,#scene summary,#scene .planet-panel{pointer-events:auto}
 .toolbar{position:absolute;z-index:2;left:1.2%;top:42%;display:flex;align-items:center;gap:.35vw;background:#061223d9;border:1px solid #6a91b55c;border-radius:.4vw;padding:.35vw .5vw;box-shadow:0 .3vw 1vw #0009}
 .toolbar label{display:flex;align-items:center;gap:.25vw;font-size:.5vw;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .toolbar select,.toolbar button,.action{background:#143149;color:#fff;border:1px solid #8ecfff81;border-radius:.25vw;min-height:1.25vw;padding:.2vw .45vw;font-size:.59vw}
@@ -203,11 +206,16 @@ body.cylinder .back:hover,body.cylinder .back:focus-visible{transform:scaleX(var
 .toolbar select,.toolbar button{color:#f4ead7}
 #status{color:#bad5e2}
 /* Decorative spacecraft use compositor transforms and stay behind the exhibit. */
-.spacecraft{position:absolute;z-index:0;display:block;height:auto;pointer-events:none;user-select:none;object-fit:contain;opacity:.7;filter:drop-shadow(0 0 .7vw #8acfff44);will-change:transform;backface-visibility:hidden;transition:left .8s ease,top .8s ease,width .8s ease,opacity .8s ease}
+.spacecraft{position:absolute;z-index:0;display:block;height:auto;pointer-events:none;user-select:none;object-fit:contain;opacity:.94;filter:brightness(1.18) drop-shadow(0 0 .7vw #8acfff77);will-change:transform;backface-visibility:hidden;transition:left .8s ease,top .8s ease,width .8s ease,opacity .8s ease}
+.craft-hotspot{appearance:none;border:0;padding:0;background:none;pointer-events:auto!important;cursor:pointer}
+.craft-hotspot .craft-image{display:block;width:100%;height:auto;pointer-events:none;user-select:none}
+.craft-hotspot:hover,.craft-hotspot:focus-visible{opacity:1;filter:drop-shadow(0 0 1vw #87d9ff)}
+.craft-hotspot:focus-visible{outline:2px solid #e7c58a;outline-offset:4px}
+.astronaut.craft-hotspot{display:block;height:auto}
 .rocket{left:-12%;top:35%;width:clamp(90px,7vw,220px);animation:rocketCruise 115s linear infinite;animation-delay:-20s}
-.space-station{left:73%;top:23%;width:clamp(150px,11vw,340px);opacity:.57;animation:stationFloat 38s ease-in-out infinite alternate}
-body.preview.detail-active .space-station{left:2%;top:8%;width:clamp(120px,13vw,210px);opacity:.7}
-body.cylinder.detail-active .space-station{top:20%;opacity:.7}
+.space-station{left:73%;top:23%;width:clamp(150px,11vw,340px);opacity:.92;animation:stationFloat 38s ease-in-out infinite alternate}
+body.preview.detail-active .space-station{left:2%;top:8%;width:clamp(120px,13vw,210px);opacity:.82}
+body.cylinder.detail-active .space-station{top:20%;opacity:.82}
 @keyframes rocketCruise{from{transform:translate3d(0,0,0) rotate(-2deg)}to{transform:translate3d(124vw,-6vh,0) rotate(3deg)}}
 @keyframes stationFloat{from{transform:translate3d(-2vw,-1vh,0) rotate(-2deg)}to{transform:translate3d(2vw,1vh,0) rotate(2deg)}}
 .world{z-index:1}
@@ -227,11 +235,28 @@ body.cylinder.detail-active .space-station{top:20%;opacity:.7}
 .scale-item strong{font-size:.85em}
 body.cylinder .hotspot-pin{width:46px;height:46px;font-size:26px}
 /* Keep the other worlds present without competing with the selected body. */
-.ambient-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;pointer-events:none;opacity:.18;filter:blur(3px) saturate(.45) brightness(.7)}
+.ambient-world{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;background:none;border:0;color:#c4d5df;text-shadow:0 1px 8px #000;pointer-events:none;opacity:.34;filter:blur(2px) saturate(.6) brightness(.82)}
 .ambient-world{top:53%;transform:translate(-50%,-50%);width:10%}
 .ambient-label{font-size:clamp(10px,.95vw,15px);font-weight:600;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap}
 .planet-panel,.action.back,.moon-field{z-index:2}
 .focus-globe{z-index:3}
-body.cylinder .ambient-world{top:53%;width:7vw;gap:10px;transform:scaleX(var(--projection-x)) translate(-50%,-50%);filter:blur(4px) saturate(.4) brightness(.65)}
+body.cylinder .ambient-world{top:53%;width:7vw;gap:10px;transform:scaleX(var(--projection-x)) translate(-50%,-50%);filter:blur(3px) saturate(.55) brightness(.78)}
 body.cylinder .ambient-label{font-size:18px}
 body.cylinder .world{transform:scaleX(var(--projection-x)) translate(-50%,-50%)}
+.craft-focus{position:absolute;z-index:1;left:28%;top:44%;width:clamp(130px,22vw,320px);height:clamp(130px,22vw,320px);transform:translate(-50%,-50%);display:grid;place-items:center;pointer-events:none;filter:drop-shadow(0 0 25px #8acfff55)}
+.craft-focus-image{display:block;max-width:100%;max-height:100%;object-fit:contain}
+.craft-panel .planet-summary{margin-bottom:1em}
+.craft-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45em;margin:.7em 0 1em}
+.craft-tab{padding:.55em .65em;border:1px solid #8ecfff88;border-radius:6px;background:#102d40;color:#dfeefa;text-align:left;font:inherit;font-weight:600}
+.craft-tab:hover,.craft-tab:focus-visible,.craft-tab.selected{background:#245a72;border-color:#e7c58a;color:#fff}
+.craft-panel .craft-section-title{margin:.5em 0;color:#f6e7c8;font:normal 1.28em Georgia,'Times New Roman',serif}
+.craft-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:.65em;margin:1em 0}
+.craft-figure{min-width:0;margin:0;border:1px solid #81b9d277;border-radius:8px;overflow:hidden;background:#0d2434}
+.craft-photo{display:block;width:100%;height:clamp(95px,12vw,175px);object-fit:contain;background:#020911}
+.craft-caption{display:flex;justify-content:space-between;align-items:center;gap:.5em;padding:.5em .65em;color:#dbe8ee;font-size:.78em;line-height:1.25}
+.craft-caption a{white-space:nowrap;color:#a6dcf6}
+body.cylinder .craft-gallery{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+body.cylinder .craft-photo{height:230px}
+body.cylinder .craft-caption{font-size:17px}
+.craft-sources{margin-top:.8em;padding-top:.5em;border-top:1px solid #8ecfff55}
+body.cylinder .craft-focus{left:43%;top:49%;width:52vh;height:52vh;transform:scaleX(var(--projection-x)) translate(-50%,-50%)}
